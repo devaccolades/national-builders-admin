@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --blue: rgb(14, 45, 94);
+    --red: rgb(255, 73, 69);
+    --green:#4BA647;
+    --lightblue: #519bf4;
+    --darkgrey: #1b1d21;
+    --lightgrey: #232327;
+    --bordercolor: #313335;
+    --textcolor: #ffffff8e;
+  }
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(35, 35, 39);
+    color: white;
+}
+
+
+
+@font-face {
+    font-family: "mont-light";
+    src: url(./assets/fonts/Mont-Light.woff);
+  }
+  @font-face {
+    font-family: "mont-bold";
+    src: url(./assets/fonts/Mont-Bold.woff);
+  }
+  @font-face {
+    font-family: "mont-bolder";
+    src: url(./assets/fonts/Mont-Heavy.woff);
+  }
+  @font-face {
+    font-family: "mont-regular";
+    src: url(./assets/fonts/Mont-Regular.woff);
+  }
+  @font-face {
+    font-family: "mont-medium";
+    src: url(./assets/fonts/Mont-SemiBold.woff);
+  }
