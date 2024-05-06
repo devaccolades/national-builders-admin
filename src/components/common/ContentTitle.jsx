@@ -1,15 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function ContentTitle({mb=0,text}) {
+function ContentTitle({text}) {
   return (
-    <Title className={`mb-[${mb}px]`}>{text}</Title>
+    <Title>{text}</Title>
   )
 }
 
 export default ContentTitle
 
-const Title = styled.h3 `
+const Title = styled.h3`
+margin-bottom: 50px;
     color: white;
     font-size: 18px;   
  

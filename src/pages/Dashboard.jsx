@@ -6,7 +6,7 @@ function Dashboard() {
   return (
     <>
         <CountSection>
-        <ContentTitle mb={50} text={"Dashboard"}/>
+        <ContentTitle text={"Dashboard"}/>
           <Cards>
             <Card>
               <CardTitle>Total Projects </CardTitle>

@@ -6,21 +6,41 @@ import bgImage from '../../../assets/images/login/login-bg.jpg'
 // Icons
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { baseUrl } from '../../../api/api';
 
 function LoginComponents() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({ "username": "", "password": "" })
   const [isVisible, setVisible] = useState();
   const [error, seterror] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (form.username.trim() === '' || form.password.trim() === '') {
-      seterror("Invalid Credentials");
+      seterror("Please enter your user name and password");
       setTimeout(() => {
         seterror('');
       }, 2500)
+    } else {
+      try {
+        const res = await axios.post(`${baseUrl}accounts/token/`,form)
+        if (res.status === 200) {
+          const token = JSON.stringify(res.data);
+          localStorage.setItem("token", token);
+          navigate('/')
+        }
+      } catch (error) {
+        console.log(error);
+        seterror("Invalid Credentials");
+        setTimeout(() => {
+          seterror('');
+        }, 2500)
+      }
     }
   };
+  
 
   return (
     <Section className='grid grid-cols-2'>

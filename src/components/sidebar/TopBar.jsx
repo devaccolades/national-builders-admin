@@ -1,12 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import { BiLogOutCircle } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
 
 function TopBar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/auth/');
+  };
     return (
         <Section>
             <Title>Hello admin,</Title>
-            <Logout >
+            <Logout onClick={handleLogout} >
                 <Icon>
                     <BiLogOutCircle/>
                 </Icon>

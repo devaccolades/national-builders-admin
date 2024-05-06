@@ -5,8 +5,13 @@ import { Link } from 'react-router-dom';
 // logo
 import logo from '../../assets/images/logo/national-builders-logo.svg'
 // Icons
-import enguiryIcon from '../../assets/icons/enq-list.svg'
 import homeIcon from '../../assets/icons/home.svg'
+import enguiryIcon from '../../assets/icons/enq-list.svg'
+import projectIcon from '../../assets/icons/projects.svg'
+import contactIcon from '../../assets/icons/contact.svg'
+import amenitiesIcon from '../../assets/icons/amenities.svg'
+
+
 function SideBar() {
   const navList = [
     {
@@ -14,6 +19,24 @@ function SideBar() {
       title: "Enquires",
       image: enguiryIcon,
       route: "/enquiry",
+    },
+    {
+      id: 2,
+      title: "Amenities",
+      image: amenitiesIcon,
+      route: "/amenities",
+    },
+    {
+      id: 3,
+      title: "Project",
+      image: projectIcon,
+      route: "/project",
+    },
+    {
+      id: 4,
+      title: "Contact",
+      image: contactIcon,
+      route: "/contact",
     },
   ]
 
