@@ -13,6 +13,7 @@ const Project = lazy(() => import('./pages/Project'));
 const AddProject = lazy(() => import('./pages/AddProject'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Amenities = lazy(() => import('./pages/Amenities'));
+const EditProject = lazy(() => import('./pages/EditProject'));
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path='/amenities' element={<Amenities />} />
               <Route path='/project' element={<Project />} />
               <Route path='/add-project' element={<AddProject />} />
+              <Route path='/edit-project/:slug' element={<EditProject />} />
               <Route path='/contact' element={<Contact />} />
             </Route>
           </Route>

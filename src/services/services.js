@@ -36,6 +36,22 @@ const AddAmenitiesApi = (values) => {
     });
 };
 
+const AddProjectApi = (values) => {
+  return api
+    .post('project/project-add/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 // ----------------------------Get methods-------------------------------------//
 
@@ -68,6 +84,27 @@ const getAllAmenitiesApi = () => {
       throw error;
     });
 };
+
+const getAllProjectsApi = () => {
+  return api
+    .get('project/project-get/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getSingleProjectsApi = (slug) => {
+  return api
+    .get(`project/project-get/${slug}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 
 
 // ----------------------------Put / patch methods-------------------------------------//
@@ -122,6 +159,25 @@ const EditAmenitieschApi = (values, id) => {
       throw error;
     });
 };
+
+const EditProjectApi = (values, slug) => {
+  return api
+    .patch(`project/project-update/${slug}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+
 // ----------------------------Delete methods-------------------------------------//
 const DeleteBranchApi = (id) => {
   return api
@@ -169,4 +225,9 @@ export {
   EditAmenitieschApi,
   DeleteAmenitieschApi,
   getAllAmenitiesApi,
+
+  AddProjectApi,
+  EditProjectApi,
+  getAllProjectsApi,
+  getSingleProjectsApi,
 };

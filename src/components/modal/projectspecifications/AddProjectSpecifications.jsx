@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { SpecificationAddSchema } from '../../../../Validations/Validations';
+import { SpecificationAddSchema } from '../../../Validations/Validations';
 
-function ProjectSpecifications({ isModal, setModal, setSpecifications }) {
+function AddProjectSpecifications({ isModal, setModal, setSpecifications }) {
     const initialValues = {
         title: "",
         description: "",
@@ -76,7 +76,7 @@ function ProjectSpecifications({ isModal, setModal, setSpecifications }) {
     )
 }
 
-export default ProjectSpecifications
+export default AddProjectSpecifications
 
 const Container = styled.div`
   position: fixed;

@@ -1,24 +1,17 @@
+import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import ContentTitle from '../components/common/ContentTitle'
-import { AddProjectApi, getBranchDropDownApi } from '../services/services'
-import { Spinner } from '@material-tailwind/react'
-import { ProjectAddSchema } from '../Validations/Validations'
-import { useFormik } from 'formik'
-import { useNavigate } from 'react-router-dom'
-import Swal from 'sweetalert2'
+import { ProjectEditSchema } from '../../../Validations/Validations';
+import { EditProjectApi, getBranchDropDownApi } from '../../../services/services';
+import { Spinner } from '@material-tailwind/react';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
-function AddProject() {
+function BasicDetails({ datas, slug }) {
     const navigate = useNavigate()
-
-    // Lising Datas
     const [branchDropDown, setBranchDropDown] = useState(null)
-
-    // Thumbails and qr_code 
     const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "" })
 
-
-    // Get backend datas
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -35,26 +28,24 @@ function AddProject() {
         fetchData();
 
     }, []);
-
-    // Form Submission
     const initialValues = {
-        name: "",
-        location: "",
-        description: "",
-        rera_number: "",
-        company_branch: "",
-        type: "",
-        bedrooms: "",
-        units: "",
-        area_from: "",
-        area_to: "",
-        qr_code: "",
-        thumbnail: "",
-        slug: "",
-        status: "",
-        iframe: "",
-        meta_title: "",
-        meta_description: ""
+        name: datas.name || "",
+        location: datas.location || "",
+        description: datas.description || "",
+        rera_number: datas.rera_number || "",
+        company_branch: datas.company_branch || "",
+        type: datas.type || "",
+        bedrooms: datas.bedrooms || "",
+        units: datas.units || "",
+        area_from: datas.area_from || "",
+        area_to: datas.area_to || "",
+        qr_code: '',
+        thumbnail: '',
+        slug: datas.slug || "",
+        status: datas.status || "",
+        iframe: datas.iframe || "",
+        meta_title: datas.meta_title || "",
+        meta_description: datas.meta_description || ""
     }
     const {
         values,
@@ -66,47 +57,49 @@ function AddProject() {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: ProjectAddSchema,
+        validationSchema: ProjectEditSchema,
         onSubmit: async (values, { setSubmitting }) => {
             const formData = new FormData();
             for (const key in values) {
                 if (Object.hasOwnProperty.call(values, key)) {
-                  formData.append(key, values[key]);
+                    formData.append(key, values[key]);
                 }
-              }
-              formData.append('qr_code', projectImages.qr_code);
-              formData.append('thumbnail', projectImages.thumbnail);
-              try {
-                const res = await AddProjectApi(formData)
-                const { StatusCode , message,data} = res.data;
-                if (StatusCode===6001){
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: `${message || "Project Added !"}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width:600,
-                  })
-                  resetForm()
-                  navigate('/project')
-                }else if (StatusCode === 6002){
+            }
+            formData.append('qr_code', projectImages.qr_code);
+            formData.append('thumbnail', projectImages.thumbnail);
+            try {
+                const res = await EditProjectApi(projectImages.qr_code || projectImages.thumbnail ? formData : values, datas?.slug)
+                const { StatusCode, message, data } = res.data;
+                if (StatusCode === 6000) {
+                    // resetForm()
+                    if (slug !== values.slug) {
+                        navigate(`/edit-project/${values.slug}`);
+                    }
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: `${message || "Project Updated !"}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        width: 600,
+                    })
+                } else if (StatusCode === 6002) {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
                         title: `${(data && data.name && data.name[0]) || (data && data.slug && data.slug[0]) || "something wrong"}`,
                         showConfirmButton: false,
                         timer: 1500,
-                        width:600,
-                      })
+                        width: 600,
+                    })
                 }
 
-              } catch (error) {
+            } catch (error) {
                 console.log(error);
                 alert('Something wrong')
-              } finally {
+            } finally {
                 setSubmitting(false);
-              }
+            }
         },
     });
 
@@ -115,17 +108,13 @@ function AddProject() {
         handleChange({
             target: {
                 name: 'slug',
-                value: lowercaseValue, 
+                value: lowercaseValue,
             },
         });
     };
 
-    
     return (
         <Section>
-            <div>
-                <ContentTitle text={"Add Projects"} />
-            </div>
             {branchDropDown === null ? (
                 <Loader>
                     <Spinner className="h-6 w-6" />
@@ -242,12 +231,12 @@ function AddProject() {
                     <Cover>
                         <Label>Project Rera Qr Code</Label>
                         <div>
-                            {projectImages.qr_code && <img className='w-[10rem] pb-3' src={URL.createObjectURL(projectImages.qr_code)} alt="rara qr code" />}
+                            {datas.qr_code && <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />}
                             <Input
                                 type="file"
                                 onChange={(e) => {
                                     handleChange(e);
-                                    setProjectImages({...projectImages, qr_code: e.currentTarget.files[0] })
+                                    setProjectImages({ ...projectImages, qr_code: e.currentTarget.files[0] })
                                 }}
                                 onBlur={handleBlur}
                                 value={values.qr_code}
@@ -261,13 +250,13 @@ function AddProject() {
                     <Cover>
                         <Label>Project Thumbnail</Label>
                         <div>
-                            {projectImages.thumbnail && <img className='pb-3' src={URL.createObjectURL(projectImages.thumbnail)} alt="rara qr code" />}
+                            {datas.thumbnail && <img className='pb-3' src={projectImages.thumbnail ? URL.createObjectURL(projectImages.thumbnail) : datas.thumbnail} alt="rara qr code" />}
                             <Input
                                 type="file"
                                 name={"thumbnail"}
                                 onChange={(e) => {
                                     handleChange(e);
-                                    setProjectImages({...projectImages, thumbnail: e.currentTarget.files[0] })
+                                    setProjectImages({ ...projectImages, thumbnail: e.currentTarget.files[0] })
                                 }}
                                 onBlur={handleBlur}
                                 value={values.thumbnail}
@@ -411,7 +400,7 @@ function AddProject() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.status}>
-                                    <Option value='' disabled>Please select a status</Option>
+                                <Option value='' disabled>Please select a status</Option>
                                 <Option value='new launch'>new launch</Option>
                                 <Option value='ready to occupy'>ready to occupy</Option>
                                 <Option value='under construction'>under construction</Option>
@@ -422,30 +411,28 @@ function AddProject() {
                             )}
                         </div>
                     </Cover>
-                    <SubmitButton>
-                        <button type='button' onClick={() => navigate('/project/')} className='cancel'>Cancel</button>
-                        <button type='submit' className='submit'>Submit</button>
-                    </SubmitButton>
+                    <Cover>
+                        <SubmitButton>
+                            <button type='submit' className='submit'>Update</button>
+                        </SubmitButton>
+                    </Cover>
+
                 </Form>
             )}
         </Section>
     )
 }
 
-export default AddProject
+export default BasicDetails
 
 const Section = styled.div`
-    .GotoBtn{
-    margin-top: 20px;
-    padding:10px 26px;
-    font-size: 16px;
-    text-align: center;
-    background-color: var(--lightblue);
-    color: var(--darkgrey);
-    border: 1px solid var(--bordercolor);
-    border-radius: 10px;
-    }
+border: 1px solid var(--bordercolor);
+border-radius: 0 20px 20px 20px;
+padding-top: 5rem;
+padding-bottom: 2rem;
+margin-bottom: 5rem;
 `
+
 const Form = styled.form`
 
 `
@@ -519,11 +506,8 @@ const Loader = styled.div`
 const SubmitButton = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 3rem;
-    padding-bottom: 5rem;
-    gap: 1rem;
+    justify-content: end;
+    padding-top: 30px;
     .submit{
         padding:10px 26px;
     font-size: 16px;
@@ -533,12 +517,5 @@ const SubmitButton = styled.div`
     border: 1px solid var(--bordercolor);
     border-radius: 10px;
     }
-    .cancel{
-        padding:10px 26px;
-    font-size: 16px;
-    text-align: center;
-    color: red;
-    border: 1px solid var(--bordercolor);
-    border-radius: 10px;
-    }
+   
 `
