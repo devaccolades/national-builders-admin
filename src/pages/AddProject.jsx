@@ -244,6 +244,7 @@ function AddProject() {
                         <div>
                             {projectImages.qr_code && <img className='w-[10rem] pb-3' src={URL.createObjectURL(projectImages.qr_code)} alt="rara qr code" />}
                             <Input
+                            accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 onChange={(e) => {
                                     handleChange(e);
@@ -263,6 +264,7 @@ function AddProject() {
                         <div>
                             {projectImages.thumbnail && <img className='pb-3' src={URL.createObjectURL(projectImages.thumbnail)} alt="rara qr code" />}
                             <Input
+                            accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 name={"thumbnail"}
                                 onChange={(e) => {

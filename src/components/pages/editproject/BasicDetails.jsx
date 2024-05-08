@@ -16,9 +16,7 @@ function BasicDetails({ datas, slug }) {
         const fetchData = async () => {
             try {
                 const branchRes = await getBranchDropDownApi();
-
                 const branchData = branchRes.data.data || [];
-
                 setBranchDropDown(branchData);
             } catch (error) {
                 console.error(error);
@@ -233,6 +231,7 @@ function BasicDetails({ datas, slug }) {
                         <div>
                             {datas.qr_code && <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />}
                             <Input
+                            accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 onChange={(e) => {
                                     handleChange(e);
@@ -252,6 +251,7 @@ function BasicDetails({ datas, slug }) {
                         <div>
                             {datas.thumbnail && <img className='pb-3' src={projectImages.thumbnail ? URL.createObjectURL(projectImages.thumbnail) : datas.thumbnail} alt="rara qr code" />}
                             <Input
+                            accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 name={"thumbnail"}
                                 onChange={(e) => {

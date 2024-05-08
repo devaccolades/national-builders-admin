@@ -53,6 +53,41 @@ const AddProjectApi = (values) => {
     });
 };
 
+const AddProjectImagesApi = (values) => {
+  return api
+    .post('project/project-images-add/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddFloorPlanImagesApi = (values) => {
+  return api
+    .post('project/floor-plan-images-add/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+
 // ----------------------------Get methods-------------------------------------//
 
 const getBranchApi = () => {
@@ -105,6 +140,35 @@ const getSingleProjectsApi = (slug) => {
     });
 };
 
+const getProjectImagessApi = (projectId) => {
+  return api
+    .get(`project/project-images-get/${projectId}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getFloorPlanImagessApi = (projectId) => {
+  return api
+    .get(`project/floor-plan-images-get/${projectId}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getProjectAmenitiesApi = (projectId) => {
+  return api
+    .get(`project/project-amenities-get/${projectId}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 
 // ----------------------------Put / patch methods-------------------------------------//
@@ -177,6 +241,40 @@ const EditProjectApi = (values, slug) => {
     });
 };
 
+const EditProjectImagesApi = (values, id) => {
+  return api
+    .patch(`project/project-images-update/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const EditFloorPlanImagesApi = (values, id) => {
+  return api
+    .patch(`project/floor-plan-images-update/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
 
 // ----------------------------Delete methods-------------------------------------//
 const DeleteBranchApi = (id) => {
@@ -213,6 +311,42 @@ const DeleteAmenitieschApi = (id) => {
     });
 };
 
+const DeleteProjectImageApi = (id) => {
+  return api
+    .delete(`project/project-images-delete/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const DeleteFloorPlanImageApi = (id) => {
+  return api
+    .delete(`project/floor-plan-images-delete/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+
+
 export {
   AddBranchApi,
   getBranchApi,
@@ -230,4 +364,16 @@ export {
   EditProjectApi,
   getAllProjectsApi,
   getSingleProjectsApi,
+
+  AddProjectImagesApi,
+  getProjectImagessApi,
+  EditProjectImagesApi,
+  DeleteProjectImageApi,
+
+  getFloorPlanImagessApi,
+  AddFloorPlanImagesApi,
+  EditFloorPlanImagesApi,
+  DeleteFloorPlanImageApi,
+
+  getProjectAmenitiesApi,
 };

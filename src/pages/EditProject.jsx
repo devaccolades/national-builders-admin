@@ -13,7 +13,7 @@ import { Spinner } from '@material-tailwind/react';
 function EditProject() {
     const { slug } = useParams();
     const navigate = useNavigate()
-    const [tabs, setTabs] = useState('basicdetails')
+    const [tabs, setTabs] = useState('amenities')
     const [data, setData] = useState(null)
 
     useEffect(() => {
@@ -23,6 +23,7 @@ function EditProject() {
                 const { StatusCode, data } = res.data;
                 if (StatusCode === 6000) {
                     setData(data);
+
                 } else {
                     navigate('/project');
                 }
@@ -64,11 +65,10 @@ function EditProject() {
                         <p onClick={() => setTabs('amenities')} className={`${tabs === 'amenities' ? "bg-blue-100 bg-opacity-20 border-blue-400 text-blue-400 border-b-2" : "bg-gray-800"}   py-4 px-8 cursor-pointer`}>Amenities</p>
                         <p onClick={() => setTabs('specification')} className={`${tabs === 'specification' ? "bg-blue-100 bg-opacity-20 border-blue-400 text-blue-400 border-b-2" : "bg-gray-800"}   py-4 px-8 cursor-pointer`}>Specification & Near by Locations</p>
                     </div>
-
                     {tabs === 'basicdetails' && data && <BasicDetails datas={data} slug={slug}/>}
-                    {tabs === 'images' && <ImageList />}
-                    {tabs === 'amenities' && <AmenitiesList />}
-                    {tabs === 'specification' && <SpecificationAndNearBy />}
+                    {tabs === 'images' && data && <ImageList id={data.id}/>}
+                    {tabs === 'amenities' && data && <AmenitiesList projectId={data.id} />}
+                    {tabs === 'specification' && data &&<SpecificationAndNearBy />}
                 </>
             )}
 

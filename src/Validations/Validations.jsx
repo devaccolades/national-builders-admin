@@ -92,18 +92,18 @@ export const ProjectAddSchema = Yup.object({
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
     qr_code: Yup.string().trim().min(4).required("Please select the QR code image.")
-        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp, svg) are allowed.', function (value) {
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
             return true;
         }),
     thumbnail: Yup.string().trim().min(4).required("Please select the thumbnail image.")
-        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp, svg) are allowed.', function (value) {
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
@@ -129,18 +129,18 @@ export const ProjectEditSchema = Yup.object({
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
     qr_code: Yup.string().trim().min(4)
-        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp, svg) are allowed.', function (value) {
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
             return true;
         }),
     thumbnail: Yup.string().trim().min(4)
-        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp, svg) are allowed.', function (value) {
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
@@ -152,4 +152,30 @@ export const ProjectEditSchema = Yup.object({
 export const SpecificationAddSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter specificaation title"),
     description: Yup.string().trim().min(10).required("Please enter specificaation description"),
+});
+
+export const FloorImageAddSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    images: Yup.string().trim().min(4).required("Please select the a image.")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const FloorImageEditSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    images: Yup.string().trim().min(4)
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
 });
