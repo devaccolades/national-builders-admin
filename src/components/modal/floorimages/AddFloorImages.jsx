@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import { FloorImageAddSchema } from '../../../Validations/Validations';
 import { AddFloorPlanImagesApi } from '../../../services/services';
+import Swal from 'sweetalert2';
 
 function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
     const [image, setImage] = useState(null)
@@ -33,6 +34,14 @@ function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
                     setModal(false)
                     fetDataFloorImages()
                     resetForm();
+                    Swal.fire({
+                      position: 'top-end',
+                      icon: 'success',
+                      title: `"${values.title}" Floor Plan Added !`,
+                      showConfirmButton: false,
+                      timer: 1500,
+                      width:600,
+                    })
                 } else if (StatusCode === 6002) {
                     console.log(errors);
                 }

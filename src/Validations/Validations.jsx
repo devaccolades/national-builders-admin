@@ -3,9 +3,9 @@ import * as Yup from "yup";
 export const BranchAddSchema = Yup.object({
     location: Yup.string().trim().min(4).required("Please enter branch location"),
     image: Yup.string().trim().min(4).required("Please select image")
-        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp, svg)', function (value) {
+        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
@@ -20,9 +20,9 @@ export const BranchAddSchema = Yup.object({
 export const BranchEditSchema = Yup.object({
     location: Yup.string().trim().min(4).required("Please enter branch location"),
     image: Yup.string().trim().min(4)
-        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp, svg)', function (value) {
+        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
             if (value) {
-                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
                 const extension = value.split('.').pop().toLowerCase();
                 return acceptedFormats.includes(extension);
             }
@@ -59,21 +59,6 @@ export const AmenitiesEditSchema = Yup.object({
             return true;
         }),
 });
-
-const amenitySchema = Yup.array()
-    .of(Yup.string().required('Amenity is required'))
-    .min(1, 'At least one amenity must be selected');
-
-const specificationSchema = Yup.array()
-    .of(Yup.string().required('Amenity is required'))
-    .min(1, 'At least one specification add');
-
-
-
-const MultitpleImageSchema = Yup.array()
-    .of(Yup.string().required('Amenity is required'))
-    .min(1, 'At least one amenity must be selected');
-
 
 export const ProjectAddSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter the project name."),
@@ -150,8 +135,16 @@ export const ProjectEditSchema = Yup.object({
 });
 
 export const SpecificationAddSchema = Yup.object({
+    project: Yup.string().trim().required("Please enter specificaation title"),
     title: Yup.string().trim().min(4).required("Please enter specificaation title"),
-    description: Yup.string().trim().min(10).required("Please enter specificaation description"),
+    description: Yup.string().trim().min(10).required("Please enter the specificaation description"),
+});
+
+export const NearByAddSchema = Yup.object({
+    project: Yup.string().trim().required("Please enter near by location"),
+    location_name: Yup.string().trim().required("Please enter near by title"),
+    distance: Yup.string().trim().required("Please enter distance"),
+    measurement_unit: Yup.string().trim().required("Please select unit"),
 });
 
 export const FloorImageAddSchema = Yup.object({
@@ -170,6 +163,54 @@ export const FloorImageAddSchema = Yup.object({
 export const FloorImageEditSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter a title"),
     images: Yup.string().trim().min(4)
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+
+export const RentalsAddSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    company_branch: Yup.string().trim().required("Please select the branch"),
+    type: Yup.string().trim().required("Please select the type"),
+    area: Yup.string().trim().required("Please enter the area (sq.ft)"),
+    price: Yup.string().trim().required("Please enter the price"),
+    image: Yup.string().trim().required("Please select the image")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const RentalsEditSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    company_branch: Yup.string().trim().required("Please select the branch"),
+    type: Yup.string().trim().required("Please select the type"),
+    area: Yup.string().trim().required("Please enter the area (sq.ft)"),
+    price: Yup.string().trim().required("Please enter the price"),
+    image: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const KeyHandoverAddSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
                 const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];

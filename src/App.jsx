@@ -14,6 +14,8 @@ const AddProject = lazy(() => import('./pages/AddProject'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Amenities = lazy(() => import('./pages/Amenities'));
 const EditProject = lazy(() => import('./pages/EditProject'));
+const Rentals = lazy(() => import('./pages/Rentals'));
+const KeyHandOver = lazy(() => import('./pages/KeyHandOver'));
 
 function App() {
   return (
@@ -28,10 +30,12 @@ function App() {
             <Route path='/' element={<Layout />}>
               <Route path='/' element={<Dashboard />} />
               <Route path='/enquiry' element={<Enquiry />} />
+              <Route path='/rentals' element={<Rentals />} />
               <Route path='/amenities' element={<Amenities />} />
               <Route path='/project' element={<Project />} />
               <Route path='/add-project' element={<AddProject />} />
               <Route path='/edit-project/:slug' element={<EditProject />} />
+              <Route path='/key-handover' element={<KeyHandOver />} />
               <Route path='/contact' element={<Contact />} />
             </Route>
           </Route>

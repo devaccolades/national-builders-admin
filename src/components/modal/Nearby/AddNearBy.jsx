@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { SpecificationAddSchema } from '../../../Validations/Validations';
+import { NearByAddSchema } from '../../../Validations/Validations';
+import { AddProjectDistanceApi } from '../../../services/services';
 import Swal from 'sweetalert2';
-import { AddProjectSpecificationApi } from '../../../services/services';
-
-function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
+function AddNearBy({ isModal, setModal, fetchData, projectId }) {
     const initialValues = {
-      project: projectId,
-        title: "",
-        description: "",
+        project: projectId || "",
+        location_name: "",
+        distance: "",
+        measurement_unit: "",
     }
     const {
         values,
@@ -21,28 +21,32 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: SpecificationAddSchema,
+        validationSchema: NearByAddSchema,
         onSubmit: async (values, { setSubmitting }) => {
-          try {
-            const res = await AddProjectSpecificationApi(values)
-            const { StatusCode, message, data } = res.data;
-            if (StatusCode === 6001){
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: message ||'Specification Added !',
-                showConfirmButton: false,
-                timer: 1500,
-                width:600,
-              })
-              resetForm()
-              setModal(false)
-              fetchData()
-            }
-          } catch (error) {
-            console.log(error);
-          }
-            
+              try {
+                const res = await AddProjectDistanceApi(values)
+                const { StatusCode , data} = res.data;
+                if (StatusCode===6001){
+                  setModal(false)
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'New Near By Added !',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    width:600,
+                  })
+                  resetForm();
+                  fetchData();
+                }else if (StatusCode === 6002){
+                  alert('Somthing went wrong')
+                }
+              } catch (error) {
+                console.log(error);
+                alert('Somthing went wrong',error)
+              } finally {
+                setSubmitting(false);
+              }
         },
     });
     return (
@@ -50,38 +54,55 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Specification</Heding>
+                    <Heding>Add Near By Locations</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
-                            <Label>Title</Label>
+                            <Label>Location Name</Label>
                             <div className='w-full'>
                                 <Input
-                                    placeholder='Enter Title'
+                                    placeholder='Enter location name'
                                     type="text"
-                                    name={"title"}
+                                    name={"location_name"}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.title}
+                                    value={values.location_name}
                                 />
-                                {touched.title && errors.title && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
+                                {touched.location_name && errors.location_name && (
+                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.location_name}</div>
                                 )}
                             </div>
                         </Cover>
+
                         <Cover>
-                            <Label>Description</Label>
-                            <div className='w-full'>
-                                <TextArea
-                                    placeholder='Enter Description'
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.description}
-                                    name={"description"}
-                                >
-                                </TextArea>
-                                {touched.description && errors.description && (
-                                    <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
-                                )}
+                            <Label>Distance (6.6)</Label>
+                            <div className='w-full grid grid-cols-2 gap-4'>
+                                <div>
+                                    <Input
+                                        placeholder='Enter Distance'
+                                        type="number"
+                                        name={"distance"}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.distance}
+                                    />
+                                    {touched.distance && errors.distance && (
+                                        <div className="text-red-500 text-sm pt-1 -mb-3">{errors.distance}</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <Select name='measurement_unit'
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.measurement_unit}
+                                    >
+                                        <Option value='' disabled>Please select Unit</Option>
+                                        <Option value='km'>K.M</Option>
+                                        <Option value='meter'>Meter</Option>
+                                    </Select>
+                                    {touched.measurement_unit && errors.measurement_unit && (
+                                        <div className="text-red-500 text-sm pt-1 -mb-3">{errors.measurement_unit}</div>
+                                    )}
+                                </div>
                             </div>
                         </Cover>
                         <SubmitBtn>
@@ -92,11 +113,11 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
                     </Form>
                 </div>
             </Modal>
-        </Container>
+        </Container >
     )
 }
 
-export default AddProjectSpecifications
+export default AddNearBy
 
 const Container = styled.div`
   position: fixed;
@@ -228,3 +249,21 @@ const SubmitBtn = styled.div`
     border-radius: 10px;
  }
 `
+const Select = styled.select`
+  padding: 10px 20px;
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+  /* text-transform: capitalize; */
+
+`;
+
+const Option = styled.option`
+    /* text-transform: capitalize; */
+
+`;

@@ -35,7 +35,7 @@ function Contact() {
     const ChangeBrangeSelection = async (values) => {
         Swal.fire({
             title: '',
-            text: `${values.show_user_side ? `Do you want to hide the '${values.location}' branch on the user side?`:`Do you want to display the '${values.location}' branch on the user side?`}`,
+            text: `${values.show_user_side ? `Do you want to hide the '${values.location}' branch from the user side?`:`Do you want to display the '${values.location}' branch on the user side?`}`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

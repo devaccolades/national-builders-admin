@@ -1,89 +1,62 @@
-import { useFormik } from 'formik';
 import React, { useState } from 'react'
 import styled from 'styled-components';
-import { FloorImageEditSchema } from '../../../Validations/Validations';
-import { EditFloorPlanImagesApi } from '../../../services/services';
+import { useFormik } from 'formik';
+import { SpecificationAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
+import { AddProjectSpecificationApi, EditSpecificationApi } from '../../../services/services';
 
-function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
-    const [image, setImage] = useState(null)
+function EditProjectSpecifications({ isModal, setModal,fetchData,editData }) {
     const initialValues = {
-        title: editData?.title || "",
-        images: '',
-    }
-    const {
-        values,
-        errors,
-        touched,
-        resetForm,
-        handleBlur,
-        handleSubmit,
-        handleChange,
-    } = useFormik({
-        initialValues: initialValues,
-        validationSchema: FloorImageEditSchema,
-        onSubmit: async (values, { setSubmitting }) => {
-            const formData = new FormData();
-            formData.append('images', image);
-            formData.append('title', values.title);
+        project: editData.project || "",
+          title: editData.title || "",
+          description: editData.description || "",
+      }
+      const {
+          values,
+          errors,
+          touched,
+          resetForm,
+          handleBlur,
+          handleSubmit,
+          handleChange,
+      } = useFormik({
+          initialValues: initialValues,
+          validationSchema: SpecificationAddSchema,
+          onSubmit: async (values, { setSubmitting }) => {
             try {
-                const res = await EditFloorPlanImagesApi(values.images?formData:values,editData.id)
-                const { StatusCode, data } = res.data;
-                if (StatusCode === 6000) {
-                    setModal(false)
-                    resetForm();
-                    fetDataFloorImages()
-                    Swal.fire({
-                      position: 'top-end',
-                      icon: 'success',
-                      title: 'Floor Plan Updated!',
-                      showConfirmButton: false,
-                      timer: 1500,
-                      width:600,
-                    })
-                } else if (StatusCode === 6002) {
-                    console.log(errors);
-                }
+              const res = await EditSpecificationApi(editData?.id,values)
+              const { StatusCode, message, data } = res.data;
+              if (StatusCode === 6000){
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: `${values?.title} Specification Updated !`,
+                  showConfirmButton: false,
+                  timer: 1500,
+                  width:600,
+                })
+                resetForm()
+                setModal(false)
+                fetchData()
+              }
             } catch (error) {
-                console.log(error);
-            } finally {
-                setSubmitting(false);
+              console.log(error);
             }
-        },
-    });
+              
+          },
+      });
   return (
     <Container className={isModal && "active"}>
     <Overlay onClick={() => setModal(false)}></Overlay>
     <Modal>
         <div>
-            <Heding>Edit Floor Plan</Heding>
+            <Heding>Edit Specification</Heding>
             <Form onSubmit={handleSubmit}>
-                <Cover>
-                    <Label>Image ( 512 x 512)</Label>
-                    <div className='w-full'>
-                        {editData?.images && (
-                            <img className='pb-2' src={image?URL.createObjectURL(image):editData?.images} alt="Selected" />
-                        )}
-                        <Input
-                            type="file"
-                            name={"images"}
-                            onChange={(event) => {
-                                handleChange(event);
-                                setImage(event.currentTarget.files[0]);
-                            }}
-                            onBlur={handleBlur}
-                            value={values.images}
-                            accept=".png, .jpeg, .jpg, .webp"
-                        />
-                        {touched.images && errors.images && (
-                            <div className="text-red-500 text-sm pt-1 -mb-3">{errors.images}</div>
-                        )}
-                    </div>
-                </Cover>
                 <Cover>
                     <Label>Title</Label>
                     <div className='w-full'>
                         <Input
+                            placeholder='Enter Title'
                             type="text"
                             name={"title"}
                             onChange={handleChange}
@@ -91,13 +64,29 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
                             value={values.title}
                         />
                         {touched.title && errors.title && (
-                            <div className="text-red-500 text-sm pt-1 -mb-3">{errors.title}</div>
+                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
+                        )}
+                    </div>
+                </Cover>
+                <Cover>
+                    <Label>Description</Label>
+                    <div className='w-full'>
+                        <TextArea
+                            placeholder='Enter Description'
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.description}
+                            name={"description"}
+                        >
+                        </TextArea>
+                        {touched.description && errors.description && (
+                            <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
                         )}
                     </div>
                 </Cover>
                 <SubmitBtn>
                     <button type='submit'>
-                        Update
+                        Submit
                     </button>
                 </SubmitBtn>
             </Form>
@@ -107,7 +96,8 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
   )
 }
 
-export default EditFloorImages
+export default EditProjectSpecifications
+
 
 const Container = styled.div`
   position: fixed;
@@ -209,6 +199,17 @@ const Input = styled.input`
   padding: 10px 20px;
   width: 100%;
   height: 50px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+`;
+const TextArea = styled.textarea`
+  padding: 10px 20px;
+  width: 100%;
+  height: 160px;
   border-radius: 6px;
   box-sizing: border-box;
   background-color: #5b5b5b;

@@ -87,6 +87,57 @@ const AddFloorPlanImagesApi = (values) => {
     });
 };
 
+const AddProjectSpecificationApi = (values) => {
+  return api
+    .post('project/specifications-add/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddProjectDistanceApi = (values) => {
+  return api
+    .post('project/project-distance-add/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddRentalsApi = (values) => {
+  return api
+    .post('project/rental/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
 
 // ----------------------------Get methods-------------------------------------//
 
@@ -170,6 +221,44 @@ const getProjectAmenitiesApi = (projectId) => {
     });
 };
 
+const getProjectSpecificationsApi = (projectId) => {
+  return api
+    .get(`project/specifications-get/${projectId}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getProjectDistanceApi = (projectId) => {
+  return api
+    .get(`project/project-distance-get/${projectId}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getRentalsApi = () => {
+  return api
+    .get('project/rental/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+const getKeyHandOversApi = () => {
+  return api
+    .get('general/key-handover/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 // ----------------------------Put / patch methods-------------------------------------//
 
@@ -275,11 +364,94 @@ const EditFloorPlanImagesApi = (values, id) => {
     });
 };
 
+const UpdateAmenitiesApi = (values, projectId) => {
+  return api
+    .patch(`project/project-amenities-add/${projectId}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const EditSpecificationApi = (id,values) => {
+  return api
+    .patch(`project/specifications-update/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+const EditDistanceApi = (id,values) => {
+  return api
+    .patch(`project/project-distance-edit/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const EditRentaleApi = (values,id) => {
+  return api
+    .patch(`project/rental/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 // ----------------------------Delete methods-------------------------------------//
 const DeleteBranchApi = (id) => {
   return api
     .delete(`general/branch/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const DeleteProjectApi = (id) => {
+  return api
+    .delete(`project/project-delete/${id}/`, {
       withCredentials: true,
       headers: {
         "Content-Type": "multipart/form-data"
@@ -345,6 +517,55 @@ const DeleteFloorPlanImageApi = (id) => {
     });
 };
 
+const DeleteProjectspecificationApi = (id) => {
+  return api
+    .delete(`project/specifications-delete/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+const DeleteDistanceApi = (id) => {
+  return api
+    .delete(`project/project-distance-delet/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const DeleteRentalApi = (id) => {
+  return api
+    .delete(`project/rental/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 
 export {
@@ -364,6 +585,7 @@ export {
   EditProjectApi,
   getAllProjectsApi,
   getSingleProjectsApi,
+  DeleteProjectApi,
 
   AddProjectImagesApi,
   getProjectImagessApi,
@@ -376,4 +598,22 @@ export {
   DeleteFloorPlanImageApi,
 
   getProjectAmenitiesApi,
+  UpdateAmenitiesApi,
+
+  getProjectSpecificationsApi,
+  AddProjectSpecificationApi,
+  EditSpecificationApi,
+  DeleteProjectspecificationApi,
+
+  getProjectDistanceApi,
+  AddProjectDistanceApi,
+  EditDistanceApi,
+  DeleteDistanceApi,
+
+  getRentalsApi,
+  AddRentalsApi,
+  EditRentaleApi,
+  DeleteRentalApi,
+
+  getKeyHandOversApi,
 };

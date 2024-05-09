@@ -62,6 +62,14 @@ function ImageList({ id }) {
       const res = await AddProjectImagesApi(formData);
       const { StatusCode, data } = res.data;
       if (StatusCode === 6001) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Image Added !',
+          showConfirmButton: false,
+          timer: 1500,
+          width:600,
+        })
         fetData()
       }
     } catch (error) {
@@ -76,6 +84,14 @@ function ImageList({ id }) {
       const res = await EditProjectImagesApi(formData, id)
       const { StatusCode,data } = res.data;
       if (StatusCode === 6000) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Image Updated!',
+          showConfirmButton: false,
+          timer: 1500,
+          width:600,
+        })
         fetData()
       } else {
         alert(data && data?.images ? 'You cannot upload SVG images':"something went wrong")
@@ -103,6 +119,14 @@ function ImageList({ id }) {
           const { StatusCode, message } = res.data;
           if (StatusCode === 6000) {
             fetData()
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Image Deleted !',
+              showConfirmButton: false,
+              timer: 1500,
+              width:600,
+            })
           } else {
             Swal.fire('Error!', 'Failed to delete image.', 'error');
           }
@@ -114,10 +138,10 @@ function ImageList({ id }) {
     });
   };
 
-  const FloorImageDelete = async (id) => {
+  const FloorImageDelete = async (data) => {
     Swal.fire({
       title: '',
-      text: 'Are you sure you want to delete this image?',
+      text: `Are you sure you want to delete "${data.title}" floor plan?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -126,10 +150,17 @@ function ImageList({ id }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await DeleteFloorPlanImageApi(id)
-          console.log(res);
+          const res = await DeleteFloorPlanImageApi(data.id)
           const { StatusCode, message } = res.data;
           if (StatusCode === 6000) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Floor Plan Deleted!',
+              showConfirmButton: false,
+              timer: 1500,
+              width:600,
+            })
             fetDataFloorImages()
           } else {
             Swal.fire('Error!', 'Failed to delete image.', 'error');
@@ -141,10 +172,6 @@ function ImageList({ id }) {
       }
     });
   };
-
-
-  
-
   return (
     <Section>
       <ImageLising>
@@ -222,7 +249,7 @@ function ImageList({ id }) {
                     alt="project-images"
                   />
                   <div className="absolute top-4 left-0 w-full h-full flex flex-row justify-between px-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                    <svg onClick={() => FloorImageDelete(floore.id)} className='cursor-pointer h-14 w-14 text-red-600 bg-white rounded-full p-2' viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><title /><g data-name="1" id="_1"><path d="M356.65,450H171.47a41,41,0,0,1-40.9-40.9V120.66a15,15,0,0,1,15-15h237a15,15,0,0,1,15,15V409.1A41,41,0,0,1,356.65,450ZM160.57,135.66V409.1a10.91,10.91,0,0,0,10.9,10.9H356.65a10.91,10.91,0,0,0,10.91-10.9V135.66Z" /><path d="M327.06,135.66h-126a15,15,0,0,1-15-15V93.4A44.79,44.79,0,0,1,230.8,48.67h66.52A44.79,44.79,0,0,1,342.06,93.4v27.26A15,15,0,0,1,327.06,135.66Zm-111-30h96V93.4a14.75,14.75,0,0,0-14.74-14.73H230.8A14.75,14.75,0,0,0,216.07,93.4Z" /><path d="M264.06,392.58a15,15,0,0,1-15-15V178.09a15,15,0,1,1,30,0V377.58A15,15,0,0,1,264.06,392.58Z" /><path d="M209.9,392.58a15,15,0,0,1-15-15V178.09a15,15,0,0,1,30,0V377.58A15,15,0,0,1,209.9,392.58Z" /><path d="M318.23,392.58a15,15,0,0,1-15-15V178.09a15,15,0,0,1,30,0V377.58A15,15,0,0,1,318.23,392.58Z" /><path d="M405.81,135.66H122.32a15,15,0,0,1,0-30H405.81a15,15,0,0,1,0,30Z" /></g></svg>
+                    <svg onClick={() => FloorImageDelete(floore)} className='cursor-pointer h-14 w-14 text-red-600 bg-white rounded-full p-2' viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><title /><g data-name="1" id="_1"><path d="M356.65,450H171.47a41,41,0,0,1-40.9-40.9V120.66a15,15,0,0,1,15-15h237a15,15,0,0,1,15,15V409.1A41,41,0,0,1,356.65,450ZM160.57,135.66V409.1a10.91,10.91,0,0,0,10.9,10.9H356.65a10.91,10.91,0,0,0,10.91-10.9V135.66Z" /><path d="M327.06,135.66h-126a15,15,0,0,1-15-15V93.4A44.79,44.79,0,0,1,230.8,48.67h66.52A44.79,44.79,0,0,1,342.06,93.4v27.26A15,15,0,0,1,327.06,135.66Zm-111-30h96V93.4a14.75,14.75,0,0,0-14.74-14.73H230.8A14.75,14.75,0,0,0,216.07,93.4Z" /><path d="M264.06,392.58a15,15,0,0,1-15-15V178.09a15,15,0,1,1,30,0V377.58A15,15,0,0,1,264.06,392.58Z" /><path d="M209.9,392.58a15,15,0,0,1-15-15V178.09a15,15,0,0,1,30,0V377.58A15,15,0,0,1,209.9,392.58Z" /><path d="M318.23,392.58a15,15,0,0,1-15-15V178.09a15,15,0,0,1,30,0V377.58A15,15,0,0,1,318.23,392.58Z" /><path d="M405.81,135.66H122.32a15,15,0,0,1,0-30H405.81a15,15,0,0,1,0,30Z" /></g></svg>
                     <label onClick={()=>{
                       setEditModal(true),
                       setEditdata(floore)

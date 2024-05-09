@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { SpecificationAddSchema } from '../../../Validations/Validations';
+import { RentalsAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
-import { AddProjectSpecificationApi } from '../../../services/services';
+import { AddRentalsApi, getBranchDropDownApi } from '../../../services/services';
 
-function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
+function AddKeyHandOver({isModal, setModal}) {
+    const [image, setImage] = useState(null)
     const initialValues = {
-      project: projectId,
-        title: "",
-        description: "",
+        name: "",
+        image: "",
     }
     const {
         values,
@@ -21,28 +21,39 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: SpecificationAddSchema,
+        validationSchema: RentalsAddSchema,
         onSubmit: async (values, { setSubmitting }) => {
-          try {
-            const res = await AddProjectSpecificationApi(values)
-            const { StatusCode, message, data } = res.data;
-            if (StatusCode === 6001){
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: message ||'Specification Added !',
-                showConfirmButton: false,
-                timer: 1500,
-                width:600,
-              })
-              resetForm()
-              setModal(false)
-              fetchData()
-            }
-          } catch (error) {
-            console.log(error);
-          }
-            
+            // const formData = new FormData();
+            // formData.append('name', values.name);
+            // formData.append('image', image);
+            // formData.append('company_branch', values.company_branch);
+            // formData.append('type', values.type);
+            // formData.append('area', values.area);
+            // formData.append('price', values.price);
+            //   try {
+            //     const res = await AddRentalsApi(formData)
+            //     const { StatusCode, message } = res.data;
+            //     if (StatusCode === 6001) {
+            //       setModal(false)
+            //       Swal.fire({
+            //         position: 'top-end',
+            //         icon: 'success',
+            //         title: `${message || "New Rental Added !"}`,
+            //         showConfirmButton: false,
+            //         timer: 1500,
+            //         width: 600,
+            //       })
+            //       resetForm();
+            //       fetchData();
+            //     } else if (StatusCode === 6002) {
+            //       alert('Somthing went wrong')
+            //     }
+            //   } catch (error) {
+            //     console.log(error);
+            //     alert('Something wrong')
+            //   } finally {
+            //     setSubmitting(false);
+            //   }
         },
     });
     return (
@@ -50,37 +61,43 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Specification</Heding>
+                    <Heding>Add Rentals</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
-                            <Label>Title</Label>
+                            <Label>Image ( 1080 x 1080)</Label>
                             <div className='w-full'>
+                                {values.image && (
+                                    <img className='pb-3' src={URL.createObjectURL(image)} alt="Selected" />
+                                )}
                                 <Input
-                                    placeholder='Enter Title'
-                                    type="text"
-                                    name={"title"}
-                                    onChange={handleChange}
+                                    type="file"
+                                    name={"image"}
+                                    onChange={(event) => {
+                                        handleChange(event);
+                                        setImage(event.currentTarget.files[0]);
+                                    }}
                                     onBlur={handleBlur}
-                                    value={values.title}
+                                    value={values.image}
+                                    accept="image/png, image/jpeg, image/jpg, image/webp"
                                 />
-                                {touched.title && errors.title && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
+                                {touched.image && errors.image && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
                                 )}
                             </div>
                         </Cover>
                         <Cover>
-                            <Label>Description</Label>
+                            <Label>Name</Label>
                             <div className='w-full'>
-                                <TextArea
-                                    placeholder='Enter Description'
+                                <Input
+                                    placeholder='Enter name'
+                                    type="text"
+                                    name={"name"}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.description}
-                                    name={"description"}
-                                >
-                                </TextArea>
-                                {touched.description && errors.description && (
-                                    <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
+                                    value={values.name}
+                                />
+                                {touched.name && errors.name && (
+                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
                                 )}
                             </div>
                         </Cover>
@@ -96,7 +113,7 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
     )
 }
 
-export default AddProjectSpecifications
+export default AddKeyHandOver
 
 const Container = styled.div`
   position: fixed;
@@ -205,17 +222,7 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
-const TextArea = styled.textarea`
-  padding: 10px 20px;
-  width: 100%;
-  height: 120px;
-  border-radius: 6px;
-  box-sizing: border-box;
-  background-color: #5b5b5b;
-  border: none;
-  outline: none;
-  color: #fff;
-`;
+
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;

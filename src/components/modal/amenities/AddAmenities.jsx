@@ -39,7 +39,7 @@ function AddAmenities({ isModal, setModal }) {
             width: 600,
           })
           resetForm()
-        } else if (StatusCode === 602) {
+        } else if (StatusCode === 6002) {
           alert('Somthing went wrong')
         }
 
@@ -217,17 +217,7 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
-const TextArea = styled.textarea`
-  padding: 10px 20px;
-  width: 100%;
-  height: 120px;
-  border-radius: 6px;
-  box-sizing: border-box;
-  background-color: #5b5b5b;
-  border: none;
-  outline: none;
-  color: #fff;
-`;
+
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;

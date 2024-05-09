@@ -146,7 +146,7 @@ function EditBranch({ isModal, setModal, editdData }) {
                   }}
                   onBlur={handleBlur}
                   value={values.image}
-                  accept="image/*"
+                  accept = "image/png, image/jpeg, image/jpg, image/webp"
                 />
                 {touched.image && errors.image && (
                   <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>

@@ -6,14 +6,15 @@ import BasicDetails from '../components/pages/editproject/BasicDetails';
 import ImageList from '../components/pages/editproject/ImageList';
 import AmenitiesList from '../components/pages/editproject/AmenitiesList';
 import SpecificationAndNearBy from '../components/pages/editproject/SpecificationAndNearBy';
-import { getSingleProjectsApi } from '../services/services';
+import { DeleteProjectApi, getSingleProjectsApi } from '../services/services';
 import NoDataFound from '../components/common/NoDataFound';
 import { Spinner } from '@material-tailwind/react';
+import Swal from 'sweetalert2';
 
 function EditProject() {
     const { slug } = useParams();
     const navigate = useNavigate()
-    const [tabs, setTabs] = useState('amenities')
+    const [tabs, setTabs] = useState('basicdetails')
     const [data, setData] = useState(null)
 
     useEffect(() => {
@@ -28,6 +29,7 @@ function EditProject() {
                     navigate('/project');
                 }
             } catch (error) {
+                console.log(error);
                 navigate('/project');
             }
         };
@@ -39,13 +41,41 @@ function EditProject() {
         }
     }, [slug]);
 
+    const ProjectDelete= async ()=>{
+        Swal.fire({
+            title: `Do you want to delete the project?`,
+            text: `You won't be able to revert this!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                const res = await DeleteProjectApi(data?.id)
+                const { StatusCode, message } = res.data;
+                if (StatusCode === 6000) {
+                  navigate('/project');
+                } else {
+                  Swal.fire(message || 'Error!', 'Failed to delete Specification.');
+                }
+              } catch (error) {
+                console.error('Error:', error);
+                navigate('/project');
+              }
+      
+            }
+          });
+    }
+
     return (
         <Section>
             <div className='grid grid-cols-3'>
                 <ContentTitle text={"Edit project"} />
                 <p className='text-[23px] text-[--lightblue]'>{data?.name}</p>
                 <Button>
-                    <button>Delete</button>
+                    <button onClick={()=>ProjectDelete()}>Delete</button>
                 </Button>
             </div>
             {data === null ? (
@@ -68,7 +98,7 @@ function EditProject() {
                     {tabs === 'basicdetails' && data && <BasicDetails datas={data} slug={slug}/>}
                     {tabs === 'images' && data && <ImageList id={data.id}/>}
                     {tabs === 'amenities' && data && <AmenitiesList projectId={data.id} />}
-                    {tabs === 'specification' && data &&<SpecificationAndNearBy />}
+                    {tabs === 'specification' && data &&<SpecificationAndNearBy projectId={data.id} />}
                 </>
             )}
 

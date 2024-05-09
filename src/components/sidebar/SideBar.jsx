@@ -10,6 +10,8 @@ import enguiryIcon from '../../assets/icons/enq-list.svg'
 import projectIcon from '../../assets/icons/projects.svg'
 import contactIcon from '../../assets/icons/contact.svg'
 import amenitiesIcon from '../../assets/icons/amenities.svg'
+import rentalsIcon from '../../assets/icons/rentals.svg'
+import keyhandoverIcon from '../../assets/icons/keyhandover.svg'
 
 
 function SideBar() {
@@ -22,22 +24,37 @@ function SideBar() {
     },
     {
       id: 2,
-      title: "Amenities",
-      image: amenitiesIcon,
-      route: "/amenities",
-    },
-    {
-      id: 3,
       title: "Project",
       image: projectIcon,
       route: "/project",
     },
     {
+      id: 3,
+      title: "Rentals",
+      image: rentalsIcon,
+      route: "/rentals",
+    },
+    {
       id: 4,
+      title: "Amenities",
+      image: amenitiesIcon,
+      route: "/amenities",
+    },
+    
+    {
+      id: 5,
+      title: "Key Handover",
+      image: keyhandoverIcon,
+      route: "/key-handover",
+    },
+     
+    {
+      id: 6,
       title: "Contact",
       image: contactIcon,
       route: "/contact",
     },
+    
   ]
 
   const navigate = useNavigate()

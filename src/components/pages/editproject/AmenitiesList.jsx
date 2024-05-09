@@ -2,26 +2,28 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ContentTitle from '../../common/ContentTitle'
 import AddAmenities from '../../modal/amenities/AddAmenities'
-import { getAllAmenitiesApi, getProjectAmenitiesApi } from '../../../services/services'
+import { UpdateAmenitiesApi, getAllAmenitiesApi, getProjectAmenitiesApi } from '../../../services/services'
 import { Spinner } from '@material-tailwind/react'
 import NoDataFound from '../../common/NoDataFound'
+import Swal from 'sweetalert2'
 
 function AmenitiesList({ projectId }) {
   const [isModal, setModal] = useState(false)
+  const [selectAmenities, setSelectAmenities] = useState(null)
   const [amenitiesList, setAmenitiesList] = useState(null)
-  const [projectamenitiesList, setProjectamenitiesList] = useState(null)
+  // const [projectamenitiesList, setProjectamenitiesList] = useState(null)
   const FetchProjectAmenities = async () => {
     try {
       const res = await getProjectAmenitiesApi(projectId);
       const { StatusCode, message, data } = res.data;
       if (StatusCode === 6000) {
-        setProjectamenitiesList(data)
+        setSelectAmenities(data);
       } else {
-        setProjectamenitiesList([])
+        setSelectAmenities([])
       }
     } catch (error) {
       console.log(error);
-      setProjectamenitiesList([])
+      setSelectAmenities([])
     }
   }
   const FetchAllAmenities = async () => {
@@ -39,9 +41,46 @@ function AmenitiesList({ projectId }) {
     }
   }
   useEffect(() => {
-    FetchProjectAmenities();
+    if(!isModal){
+      FetchProjectAmenities();
     FetchAllAmenities();
-  }, [])
+    }
+  }, [isModal])
+
+  const handleAmenityClick = (amenity) => {
+    const index = selectAmenities.indexOf(amenity);
+
+    if (index !== -1) {
+      const updatedAmenities = [...selectAmenities];
+      updatedAmenities.splice(index, 1);
+      setSelectAmenities(updatedAmenities);
+    } else {
+      setSelectAmenities(prevState => [...prevState, amenity]);
+    }
+  };
+  const UpdateAmenities = async () => {
+    if (selectAmenities.length === 0) {
+      Swal.fire('Please Select At Least One Amenity.');
+    } else {
+      try {
+        const res = await UpdateAmenitiesApi(selectAmenities, projectId)
+        const { StatusCode, message, data } = res.data;
+        if (StatusCode === 6000) {
+          setSelectAmenities(data)
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: "Amenities Updated !",
+            showConfirmButton: false,
+            timer: 1500,
+            width: 600,
+          })
+        }
+      } catch (error) {
+
+      }
+    }
+  }
   return (
     <Section>
       <AmenitiesLising>
@@ -51,7 +90,7 @@ function AmenitiesList({ projectId }) {
             <button onClick={() => setModal(true)}>Add Amenities</button>
           </Button>
         </div>
-        {amenitiesList === null || projectamenitiesList === null ? (
+        {amenitiesList === null || selectAmenities === null ? (
           <Loader>
             <Spinner className="h-6 w-6" />
           </Loader>
@@ -61,23 +100,22 @@ function AmenitiesList({ projectId }) {
           </>
         ) : (
           <div className='w-[90%] mx-auto grid grid-cols-4 gap-5'>
-          {amenitiesList.map((amenity,index)=>(
-            <div 
-              key={index}
-              className={`flex flex-col gap-5 justify-center items-center border border-gray-800 p-5 rounded-[1.1rem] cursor-pointer ${
-                projectamenitiesList.some(selectedAmenity => selectedAmenity.id === amenity.id) && 'bg-gray-800'
-              }`}
-              // onClick={() => handleAmenityClick(amenity)}
-            >
-              <img src={amenity?.logo} alt={amenity?.title} />
-              <p>{amenity?.title}</p>
-            </div>
-          ))}
-        </div>
+            {amenitiesList.map((amenity, index) => (
+              <div
+                key={index}
+                className={`flex flex-col gap-5 justify-center items-center border border-gray-800 p-5 rounded-[1.1rem] cursor-pointer ${selectAmenities.some(selectedAmenity => selectedAmenity === amenity.id) && 'bg-gray-800'
+                  }`}
+                onClick={() => handleAmenityClick(amenity.id)}
+              >
+                <img src={amenity?.logo} alt={amenity?.title} />
+                <p>{amenity?.title}</p>
+              </div>
+            ))}
+          </div>
         )}
-       <div className='flex justify-end items-center w-[90%] mx-auto'>
-       <button className='p-4 mt-4'>Update</button>
-       </div>
+        <div className='flex justify-end items-center w-[90%] mx-auto'>
+          <button className='update p-4 mt-5' onClick={UpdateAmenities}>Update</button>
+        </div>
       </AmenitiesLising>
 
       <AddAmenities isModal={isModal} setModal={setModal} />
@@ -95,9 +133,18 @@ border-radius: 0 20px 20px 20px;
 padding-top: 1rem;
 padding-bottom: 2rem;
 margin-bottom: 5rem;
+.update{
+   padding:10px 26px;
+    font-size: 16px;
+    text-align: center;
+    background-color: var(--lightblue);
+    color: black;
+    border: 1px solid var(--bordercolor);
+    border-radius: 10px;
+}
 `
 const Button = styled.h3`
- label , button{
+  button{
     padding:10px 26px;
     font-size: 16px;
     text-align: center;
