@@ -129,7 +129,7 @@ function EditAmenities({ isModal, setModal, editdData }) {
             </div>
           </Cover>
           <Cover>
-            <Label>Logo ( 512 x 512)</Label>
+            <Label>Logo ( 100 x 100)</Label>
             <div className='w-full'>
               <img className='pb-2 w-[6rem]' src={image ? URL.createObjectURL(image) : editdData.logo} alt="Selected" />
               <Input

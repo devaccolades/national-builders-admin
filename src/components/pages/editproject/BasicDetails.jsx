@@ -211,11 +211,11 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Project Rera Number</Label>
+                        <Label>Project RETA Number</Label>
                         <div>
                             <Input
                                 type="text"
-                                placeholder="Enter Project Rara number"
+                                placeholder="Enter Project RERA number"
                                 name={"rera_number"}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -227,7 +227,7 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Project Rera Qr Code</Label>
+                        <Label>Project RERA Qr Code</Label>
                         <div>
                             {datas.qr_code && <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />}
                             <Input
@@ -299,7 +299,7 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Area From & To</Label>
+                        <Label>Area From & To (sq. ft)</Label>
                         <div className='flex gap-5'>
                             <div>
                                 <Input
@@ -413,6 +413,7 @@ function BasicDetails({ datas, slug }) {
                     </Cover>
                     <Cover>
                         <SubmitButton>
+                        <button type='button' onClick={()=>navigate('/project')} className='cancel'>Cancel</button>
                             <button type='submit' className='submit'>Update</button>
                         </SubmitButton>
                     </Cover>
@@ -506,14 +507,24 @@ const Loader = styled.div`
 const SubmitButton = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: space-between;
     padding-top: 30px;
+    
     .submit{
         padding:10px 26px;
     font-size: 16px;
     text-align: center;
     background-color: var(--lightblue);
-    color: var(--darkgrey);
+    color: white;
+    border: 1px solid var(--bordercolor);
+    border-radius: 10px;
+    }
+    .cancel{
+        padding:10px 26px;
+    font-size: 16px;
+    text-align: center;
+    /* background-color: var(--lightblue); */
+    color: white;
     border: 1px solid var(--bordercolor);
     border-radius: 10px;
     }

@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { AmenitiesAddSchema } from '../../../Validations/Validations';
+import { SeoAddSchema } from '../../../Validations/Validations';
+import { AddSeoApi } from '../../../services/services';
 import Swal from 'sweetalert2';
-import { AddAmenitiesApi } from '../../../services/services';
-function AddAmenities({ isModal, setModal }) {
-  const [logo, setLogo] = useState(null)
+function AddSeo({isModal, setModal, fetchData}) {
   const initialValues = {
-    title: "",
-    logo: null,
+    page: "",
+    path: "",
+    meta_title: "",
+    meta_description: "",
   }
   const {
     values,
@@ -20,32 +21,29 @@ function AddAmenities({ isModal, setModal }) {
     handleChange,
   } = useFormik({
     initialValues: initialValues,
-    validationSchema: AmenitiesAddSchema,
+    validationSchema: SeoAddSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      const formData = new FormData();
-      formData.append('title', values.title);
-      formData.append('logo', logo);
       try {
-        const res = await AddAmenitiesApi(formData)
-        const { StatusCode, message } = res.data;
-        if (StatusCode === 6001) {
+        const res = await AddSeoApi(values)
+        const { StatusCode , data} = res.data;
+        if (StatusCode===6001){
           setModal(false)
+          fetchData()
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: `${message || "Amenities Added !"}`,
+            title: 'New Seo Added !',
             showConfirmButton: false,
             timer: 1500,
-            width: 600,
+            width:600,
           })
-          resetForm()
-        } else if (StatusCode === 6002) {
+          resetForm();
+        }else if (StatusCode === 6002){
           alert('Somthing went wrong')
         }
-
       } catch (error) {
         console.log(error);
-        alert('Something wrong')
+        alert('Somthing went wrong')
       } finally {
         setSubmitting(false);
       }
@@ -56,43 +54,67 @@ function AddAmenities({ isModal, setModal }) {
       <Overlay onClick={() => setModal(false)}></Overlay>
       <Modal>
         <div>
-          <Heding>Add Amenities</Heding>
+          <Heding>Add Seo</Heding>
           <Form onSubmit={handleSubmit}>
             <Cover>
-              <Label>Title</Label>
+              <Label>Path</Label>
               <div className='w-full'>
                 <Input
-                  placeholder='Enter Title'
+                placeholder='Please enter the path'
                   type="text"
-                  name={"title"}
+                  name={"path"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.title}
+                  value={values.path}
                 />
-                {touched.title && errors.title && (
-                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
+                {touched.path && errors.path && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.path}</div>
                 )}
               </div>
             </Cover>
             <Cover>
-              <Label>logo ( 100 x 100)</Label>
+              <Label>Page</Label>
               <div className='w-full'>
-                {values.logo && (
-                  <img className='pb-3 w-[5rem]' src={URL.createObjectURL(logo)} alt="Selected" />
-                )}
                 <Input
-                  type="file"
-                  name={"logo"}
-                  onChange={(event) => {
-                    handleChange(event);
-                    setLogo(event.currentTarget.files[0]);
-                  }}
+                placeholder='Please enter the page'
+                  type="text"
+                  name={"page"}
+                  onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.logo}
-                  accept="logo/*"
+                  value={values.page}
                 />
-                {touched.logo && errors.logo && (
-                  <div className="text-red-500 text-sm pt-1 -mb-3">{errors.logo}</div>
+                {touched.page && errors.page && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.page}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Meta Title</Label>
+              <div className='w-full'>
+                <TextArea
+                placeholder='Please enter the meta title'
+                  name={"meta_title"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.meta_title}
+                ></TextArea>
+                {touched.meta_title && errors.meta_title && (
+                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_title}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Meta Description</Label>
+              <div className='w-full'>
+                <TextArea
+                placeholder='Please enter the meta description'
+                  name={"meta_description"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.meta_description}
+                ></TextArea>
+                {touched.meta_description && errors.meta_description && (
+                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_description}</div>
                 )}
               </div>
             </Cover>
@@ -108,7 +130,7 @@ function AddAmenities({ isModal, setModal }) {
   )
 }
 
-export default AddAmenities
+export default AddSeo
 
 const Container = styled.div`
   position: fixed;
@@ -217,7 +239,17 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
-
+const TextArea = styled.textarea`
+  padding: 10px 20px;
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+`;
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;

@@ -70,6 +70,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Location</Label>
               <div className='w-full'>
                 <Input
+                placeholder='Please enter the branch location'
                   type="text"
                   name={"location"}
                   onChange={handleChange}
@@ -107,6 +108,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Iframe</Label>
               <div className='w-full'>
                 <TextArea
+                placeholder='Please enter the map url link'
                   name={"iframe"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -121,6 +123,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Email</Label>
               <div className='w-full'>
                 <Input
+                placeholder='Please enter the branch email id'
                   type="text"
                   name={"email"}
                   onChange={handleChange}
@@ -136,6 +139,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Phone Number</Label>
               <div className='w-full'>
                 <TextArea
+                placeholder='Please enter the branch phone number'
                   name={"phone_number"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -150,6 +154,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Address</Label>
               <div className='w-full'>
                 <TextArea
+                placeholder='Please enter the branch address'
                   name={"address"}
                   onChange={handleChange}
                   onBlur={handleBlur}

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { RentalsAddSchema } from '../../../Validations/Validations';
+import { KeyHandoverAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
-import { AddRentalsApi, getBranchDropDownApi } from '../../../services/services';
+import { AddKeyHandOverApi } from '../../../services/services';
 
-function AddKeyHandOver({isModal, setModal}) {
+function AddKeyHandOver({isModal, setModal,fetchData}) {
     const [image, setImage] = useState(null)
     const initialValues = {
         name: "",
@@ -21,39 +21,35 @@ function AddKeyHandOver({isModal, setModal}) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: RentalsAddSchema,
+        validationSchema: KeyHandoverAddSchema,
         onSubmit: async (values, { setSubmitting }) => {
-            // const formData = new FormData();
-            // formData.append('name', values.name);
-            // formData.append('image', image);
-            // formData.append('company_branch', values.company_branch);
-            // formData.append('type', values.type);
-            // formData.append('area', values.area);
-            // formData.append('price', values.price);
-            //   try {
-            //     const res = await AddRentalsApi(formData)
-            //     const { StatusCode, message } = res.data;
-            //     if (StatusCode === 6001) {
-            //       setModal(false)
-            //       Swal.fire({
-            //         position: 'top-end',
-            //         icon: 'success',
-            //         title: `${message || "New Rental Added !"}`,
-            //         showConfirmButton: false,
-            //         timer: 1500,
-            //         width: 600,
-            //       })
-            //       resetForm();
-            //       fetchData();
-            //     } else if (StatusCode === 6002) {
-            //       alert('Somthing went wrong')
-            //     }
-            //   } catch (error) {
-            //     console.log(error);
-            //     alert('Something wrong')
-            //   } finally {
-            //     setSubmitting(false);
-            //   }
+            const formData = new FormData();
+            formData.append('name', values.name);
+            formData.append('image', image);
+              try {
+                const res = await AddKeyHandOverApi(formData)
+                const { StatusCode, message } = res.data;
+                if (StatusCode === 6001) {
+                  setModal(false)
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `${message || "New Key Handover Added !"}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    width: 600,
+                  })
+                  resetForm();
+                  fetchData();
+                } else if (StatusCode === 6002) {
+                  alert('Somthing went wrong')
+                }
+              } catch (error) {
+                console.log(error);
+                alert('Something wrong')
+              } finally {
+                setSubmitting(false);
+              }
         },
     });
     return (
@@ -61,7 +57,7 @@ function AddKeyHandOver({isModal, setModal}) {
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Rentals</Heding>
+                    <Heding>Add Key Handover</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
                             <Label>Image ( 1080 x 1080)</Label>

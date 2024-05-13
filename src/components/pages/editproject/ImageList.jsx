@@ -176,7 +176,7 @@ function ImageList({ id }) {
     <Section>
       <ImageLising>
         <div className='w-[95%] mx-auto grid grid-cols-2'>
-          <ContentTitle text={"Images"} />
+          <ContentTitle text={"Images (1080 x 680)"} />
           <Button className='flex justify-end items-start'>
             <label htmlFor="fileInput">Add Images</label>
             <input
@@ -227,7 +227,7 @@ function ImageList({ id }) {
       </ImageLising>
       <FloorPlanList>
         <div className='w-[95%] mx-auto grid grid-cols-2'>
-          <ContentTitle text={"Floor Plan"} />
+          <ContentTitle text={"Floor Plan (512 x 512)"} />
           <Button className='flex justify-end items-start'>
             <button onClick={() => setModal(true)}>Add Floor Plan</button>
           </Button>

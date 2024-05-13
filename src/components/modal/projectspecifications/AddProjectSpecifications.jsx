@@ -85,7 +85,10 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
                             </div>
                         </Cover>
                         <SubmitBtn>
-                            <button type='submit'>
+                           <button onClick={()=>setModal(false)} className='cancel' type='button'>
+                                Cancel
+                            </button>
+                            <button className='submit' type='submit'>
                                 Submit
                             </button>
                         </SubmitBtn>
@@ -219,12 +222,22 @@ const TextArea = styled.textarea`
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;
-  button{
+  gap: 1rem;
+  .submit{
   padding:6px 30px;
     font-size: 16px;
     text-align: center;
     background-color: var(--lightblue);
-    color: black;
+    color: white;
     border-radius: 10px;
+ }
+ .cancel{
+  padding:6px 30px;
+    font-size: 16px;
+    text-align: center;
+    /* background-color: var(--lightblue); */
+    color: white;
+    border-radius: 10px;
+    border: 1px solid var(--bordercolor);
  }
 `

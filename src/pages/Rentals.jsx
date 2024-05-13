@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ContentTitle from '../components/common/ContentTitle'
-import { getRentalsApi } from '../services/services'
+import { EditRentaleApi, getRentalsApi } from '../services/services'
 import { Spinner } from '@material-tailwind/react'
 import NoDataFound from '../components/common/NoDataFound'
 import { FaEdit } from 'react-icons/fa'
 import AddRentals from '../components/modal/rentals/AddRentals'
 import EditRentals from '../components/modal/rentals/EditRentals'
+import Swal from 'sweetalert2'
 
 function Rentals() {
     const [data, setData] = useState(null)
@@ -29,6 +30,49 @@ function Rentals() {
         }
     }
 
+      // Change Visiblity of the frontend Rentals page
+      const ChangeRentalSelection = async (values) => {
+        Swal.fire({
+            title: '',
+            text: `${!values.is_hide ? `Do you want to hide the '${values.name}' from the user side?`:`Do you want to display the '${values.name}' branch on the user side?`}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Update it!',
+        
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                  try {
+                    const res = await EditRentaleApi({ "is_hide": !values.is_hide }, values.id);
+                    const { StatusCode , message} = res.data;
+                    if (StatusCode === 6000) {
+                        fetchData()
+                      Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: `Updated !`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        width: 600,
+                      });
+                    } if (StatusCode === 6002) {
+                      Swal.fire({
+                        position: 'top-end',
+                        icon: 'error', 
+                        title: `${message || "Some thing wrong"} !`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        width: 600,
+                      });
+                    }
+                  } catch (error) {
+                    console.log(error);
+                    alert('Something wrong');
+                  }
+            }
+        });
+    }
     useEffect(() => {
         fetchData()
     }, [])
@@ -64,20 +108,20 @@ function Rentals() {
                         </Thead>
                         <Tbody>
                             {data.map((rental, index) => (
-                                <Tr className='cursor-pointer' key={index} onClick={()=>{setEditModal(true),setEditdata(rental)}}>
-                                    <Td is_hide={rental.is_hide}>{index + 1}</Td>
-                                    <Td is_hide={rental.is_hide}><img src={rental?.image} alt="" /></Td>
-                                    <Td is_hide={rental.is_hide}>{rental?.name}</Td>
-                                    <Td is_hide={rental.is_hide}>{rental?.company_branch.location}</Td>
-                                    <Td is_hide={rental.is_hide}>{rental?.type}</Td>
-                                    <Td is_hide={rental.is_hide}>{rental?.area}</Td>
-                                    <Td is_hide={rental.is_hide}>{rental?.price}</Td>
-                                    <Td>
+                                <Tr className='cursor-pointer' key={index} >
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{index + 1}</Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}><img src={rental?.image} alt="" /></Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{rental?.name}</Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{rental?.company_branch.location}</Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{rental?.type}</Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{rental?.area}</Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}>{rental?.price}</Td>
+                                    <Td onClick={()=>ChangeRentalSelection(rental)}>
                                         {rental?.is_hide ?
                                             (<button className='bg-[#519bf4] text-white h-full w-full'>Show</button>) :
                                             (<button className='bg-gray-900 h-full w-full'>Hide</button>)}
                                     </Td>
-                                    <Td is_hide={rental.is_hide}><FaEdit className='mx-auto w-6 h-6 cursor-pointer' /></Td>
+                                    <Td onClick={()=>{setEditModal(true),setEditdata(rental)}} is_hide={rental.is_hide}><FaEdit className='mx-auto w-6 h-6 cursor-pointer' /></Td>
                                 </Tr>
                             ))}
 

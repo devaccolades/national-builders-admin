@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { RentalsAddSchema } from '../../../Validations/Validations';
+import { TestimoniealsEditSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
-import { AddRentalsApi, getBranchDropDownApi } from '../../../services/services';
+import { DeleteTestimoniealsApi, EditTestimoniealsApi } from '../../../services/services';
 
-function AddRentals({ isModal, setModal, fetchData }) {
-    const [branchDropDown, setBranchDropDown] = useState(null)
+function EditTesimonieals({ isModal, setModal, editData, fetchData, projecDropDowntData }) {
     const [image, setImage] = useState(null)
     const initialValues = {
-        name: "",
+        name: editData?.name || "",
         image: "",
-        company_branch: "",
-        type: "",
-        area: "",
-        price: "",
+        project: editData?.project?.id || "",
+        description: editData?.description || "",
     }
     const {
         values,
@@ -26,24 +23,22 @@ function AddRentals({ isModal, setModal, fetchData }) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: RentalsAddSchema,
+        validationSchema: TestimoniealsEditSchema,
         onSubmit: async (values, { setSubmitting }) => {
             const formData = new FormData();
             formData.append('name', values.name);
             formData.append('image', image);
-            formData.append('company_branch', values.company_branch);
-            formData.append('type', values.type);
-            formData.append('area', values.area);
-            formData.append('price', values.price);
+            formData.append('project', values.project);
+            formData.append('description', values.description);
               try {
-                const res = await AddRentalsApi(formData)
+                const res = await EditTestimoniealsApi(values.image ? formData:values,editData.id)
                 const { StatusCode, message } = res.data;
-                if (StatusCode === 6001) {
+                if (StatusCode === 6000) {
                   setModal(false)
                   Swal.fire({
                     position: 'top-end',
                     icon: 'success',
-                    title: `${message || "New Rental Added !"}`,
+                    title: `${message || "New Testimonieals Added !"}`,
                     showConfirmButton: false,
                     timer: 1500,
                     width: 600,
@@ -61,30 +56,52 @@ function AddRentals({ isModal, setModal, fetchData }) {
               }
         },
     });
-    useEffect(() => {
-        const fetchDataDropDownd = async () => {
+
+    const DeleteTestimonieals = async () => {
+        Swal.fire({
+          title: '',
+          text: `Are you sure you want to delete "${editData?.name}"Testimonieals?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
             try {
-                const branchRes = await getBranchDropDownApi();
-                const branchData = branchRes.data.data || [];
-
-                setBranchDropDown(branchData);
+              const res = await DeleteTestimoniealsApi(editData?.id)
+              const { StatusCode, message } = res.data;
+              if (StatusCode === 6000) {
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: `"${editData.name}" Testimonieals deleted`,
+                  showConfirmButton: false,
+                  timer: 1500,
+                  width:600,
+                })
+                fetchData()
+                setModal(false)
+              } else {
+                Swal.fire(message || 'Error!', 'Failed to delete Specification.');
+              }
             } catch (error) {
-                console.error(error);
-                setBranchDropDown([]);
+              console.error('Error:', error);
             }
-        };
-        fetchDataDropDownd();
+    
+          }
+        });
+      }
 
-    }, []);
     return (
         <Container className={isModal && "active"}>
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Rentals</Heding>
+                    <Heding>Edit Testimonieals</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
-                            <Label>Rental Name</Label>
+                            <Label>Name</Label>
                             <div className='w-full'>
                                 <Input
                                     placeholder='Enter name'
@@ -100,11 +117,9 @@ function AddRentals({ isModal, setModal, fetchData }) {
                             </div>
                         </Cover>
                         <Cover>
-                            <Label>Image ( 1080 x 1350)</Label>
+                            <Label>Image ( 1080 x 1080)</Label>
                             <div className='w-full'>
-                                {values.image && (
-                                    <img className='pb-3' src={URL.createObjectURL(image)} alt="Selected" />
-                                )}
+                                <img className='pb-3' src={values.image ? URL.createObjectURL(image) : editData.image} alt="Selected" />
                                 <Input
                                     type="file"
                                     name={"image"}
@@ -114,84 +129,53 @@ function AddRentals({ isModal, setModal, fetchData }) {
                                     }}
                                     onBlur={handleBlur}
                                     value={values.image}
-                                    accept = "image/png, image/jpeg, image/jpg, image/webp"
-                                    />
+                                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                                />
                                 {touched.image && errors.image && (
                                     <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
                                 )}
                             </div>
                         </Cover>
+
                         <Cover>
-                            <Label>Rental Branch</Label>
+                            <Label>Select Project</Label>
                             <div className='w-full'>
-                                <Select name='company_branch'
+                                <Select name='project'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.company_branch}>
-                                    <option value='' disabled>Please select a branch</option>
-                                    {branchDropDown && branchDropDown.map((branch, index) => (
-                                        <Option value={branch?.id}>{branch?.location}</Option>
+                                    value={values.project}>
+                                    <Option value='' disabled>Please select a project</Option>
+                                    {projecDropDowntData.map((project, index) => (
+                                        <Option value={project.id}>{project?.name}</Option>
                                     ))}
                                 </Select>
-                                {touched.company_branch && errors.company_branch && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.company_branch}</div>
+                                {touched.project && errors.project && (
+                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.project}</div>
                                 )}
                             </div>
                         </Cover>
                         <Cover>
-                            <Label>Rental type</Label>
+                            <Label>Enter Description</Label>
                             <div className='w-full'>
-                                <Select name='type'
+                                <TextArea
+                                    placeholder='Enter Description'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.type}>
-                                    <option value='' disabled>Please select a type</option>
-                                    <Option value='apartment'>apartment</Option>
-                                    <Option value='villas'>villas</Option>
-                                    <Option value='commercial'>commercial</Option>
-                                    <Option value='rental'>rental</Option>
-                                    <Option value='other'>other</Option>
-                                </Select>
-                                {touched.type && errors.type && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.type}</div>
-                                )}
-                            </div>
-                        </Cover>
-                        <Cover>
-                            <Label>Area (sq.ft)</Label>
-                            <div className='w-full'>
-                                <Input
-                                    placeholder='Enter name'
-                                    type="number"
-                                    name={"area"}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.area}
-                                />
-                                {touched.area && errors.area && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.area}</div>
-                                )}
-                            </div>
-                        </Cover>
-                        <Cover>
-                            <Label>Price /sqft + MMc</Label>
-                            <div className='w-full'>
-                                <Input
-                                    placeholder='Enter name'
-                                    type="number"
-                                    name={"price"}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.price}
-                                />
-                                {touched.price && errors.price && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.price}</div>
+                                    value={values.description}
+                                    name={"description"}
+                                >
+                                </TextArea>
+                                {touched.description && errors.description && (
+                                    <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
                                 )}
                             </div>
                         </Cover>
                         <SubmitBtn>
-                            <button type='submit'>
-                                Submit
+                        <button onClick={()=>DeleteTestimonieals()} className='delete' type='button'>
+                                Delete
+                            </button>
+                            <button className='submit' type='submit'>
+                                Update
                             </button>
                         </SubmitBtn>
                     </Form>
@@ -201,7 +185,7 @@ function AddRentals({ isModal, setModal, fetchData }) {
     )
 }
 
-export default AddRentals
+export default EditTesimonieals
 
 const Container = styled.div`
   position: fixed;
@@ -311,19 +295,6 @@ const Input = styled.input`
   color: #fff;
 `;
 
-const SubmitBtn = styled.div`
-  display: flex;
-  justify-content: end;
-  button{
-  padding:6px 30px;
-    font-size: 16px;
-    text-align: center;
-    background-color: var(--lightblue);
-    color: black;
-    border-radius: 10px;
- }
-`
-
 const Select = styled.select`
   padding: 10px 20px;
   width: 100%;
@@ -342,3 +313,38 @@ const Option = styled.option`
     /* text-transform: capitalize; */
 
 `;
+
+const TextArea = styled.textarea`
+  padding: 10px 20px;
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+`;
+
+const SubmitBtn = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+  .submit{
+  padding:6px 30px;
+    font-size: 16px;
+    text-align: center;
+    background-color: var(--lightblue);
+    color: white;
+    border-radius: 10px;
+ }
+ .delete{
+  padding:6px 30px;
+    font-size: 16px;
+    text-align: center;
+    background-color: var(--red);
+    color: white;
+    border-radius: 10px;
+ }
+`
+

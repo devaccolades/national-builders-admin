@@ -1,19 +1,45 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ContentTitle from '../components/common/ContentTitle';
+import { getProjectCountApi } from '../services/services';
+import { Spinner } from '@material-tailwind/react';
 
 function Dashboard() {
+  const [count, setCount] = useState(null)
+  const fetchData = async () => {
+    try {
+      const res = await getProjectCountApi()
+      const { StatusCode, data } = res.data;
+      if (StatusCode === 6000) {
+        setCount(data)
+      } else {
+        setCount(0)
+      }
+    } catch (error) {
+      setCount(0)
+    }
+  }
+  useEffect(() => {
+    fetchData()
+  }, [])
   return (
     <>
-        <CountSection>
-        <ContentTitle text={"Dashboard"}/>
+      <CountSection>
+        <ContentTitle text={"Dashboard"} />
+        {count === null ? (
+          <Loader>
+            <Spinner className="h-6 w-6" />
+          </Loader>
+        ):(
           <Cards>
             <Card>
               <CardTitle>Total Projects </CardTitle>
-              <Count>1</Count>
+              <Count>{count}</Count>
             </Card>
           </Cards>
-        </CountSection>
+        )}
+
+      </CountSection>
     </>
   )
 }
@@ -50,4 +76,12 @@ const CardTitle = styled.h3`
   @media all and (max-width: 1440px) {
     font-size: 16px;
   }
+`;
+
+const Loader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50vh;
 `;

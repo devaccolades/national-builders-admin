@@ -224,11 +224,11 @@ function AddProject() {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Project Rera Number</Label>
+                        <Label>Project RERA Number</Label>
                         <div>
                             <Input
                                 type="text"
-                                placeholder="Enter Project Rara number"
+                                placeholder="Enter Project RERA number"
                                 name={"rera_number"}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -240,7 +240,7 @@ function AddProject() {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Project Rera Qr Code</Label>
+                        <Label>Project RERA Qr Code</Label>
                         <div>
                             {projectImages.qr_code && <img className='w-[10rem] pb-3' src={URL.createObjectURL(projectImages.qr_code)} alt="rara qr code" />}
                             <Input
@@ -312,7 +312,7 @@ function AddProject() {
                         </div>
                     </Cover>
                     <Cover>
-                        <Label>Area From & To</Label>
+                        <Label>Area From & To (sq. ft)</Label>
                         <div className='flex gap-5'>
                             <div>
                                 <Input

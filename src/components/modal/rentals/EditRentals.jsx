@@ -121,7 +121,7 @@ function EditRentals({ isModal, setModal, fetchData,editdata }) {
                     <Heding>Edit Rentals</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
-                            <Label>Name</Label>
+                            <Label>Rental Name</Label>
                             <div className='w-full'>
                                 <Input
                                     placeholder='Enter name'

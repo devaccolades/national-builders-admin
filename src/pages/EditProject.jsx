@@ -43,7 +43,7 @@ function EditProject() {
 
     const ProjectDelete= async ()=>{
         Swal.fire({
-            title: `Do you want to delete the project?`,
+            title: `Do you want to delete the "${data?.name}" project?`,
             text: `You won't be able to revert this!`,
             icon: 'warning',
             showCancelButton: true,

@@ -220,3 +220,129 @@ export const KeyHandoverAddSchema = Yup.object({
             return true;
         }),
 });
+
+export const KeyHandoverEditSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    image: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+
+export const TestimoniealsAddSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    project: Yup.string().trim().min(4).required("Please select the project"),
+    description: Yup.string().trim().required("Please enter the description"),
+    image: Yup.string().trim().required("Please select the image")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const TestimoniealsEditSchema = Yup.object({
+    name: Yup.string().trim().min(4).required("Please enter a name"),
+    project: Yup.string().trim().min(4).required("Please select the project"),
+    description: Yup.string().trim().required("Please enter the description"),
+    image: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const BlogsAddSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    meta_tag: Yup.string().trim().required("Please enter a meta title "),
+    meta_description: Yup.string().trim().required("Please enter a meta description"),
+    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    body: Yup.string().trim().required("Please enter the blog content"),
+    image: Yup.string().trim().required("Please select the image")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const BlogsEditSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    meta_tag: Yup.string().trim().required("Please enter a meta title"),
+    meta_description: Yup.string().trim().required("Please enter a meta description"),
+    slug: Yup.string().trim().min(4).required("Please enter a Slug"),
+    body: Yup.string().trim().required("Please enter the blog content"),
+    image: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const NewsAndEventsAddSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    meta_tag: Yup.string().trim().required("Please enter a meta tag "),
+    youtube_link: Yup.string().trim(),
+    meta_description: Yup.string().trim().required("Please enter a meta description"),
+    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    body: Yup.string().trim().required("Please enter the content"),
+    image: Yup.string().trim().required("Please select the image")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const NewsAndEventsEditSchema = Yup.object({
+    title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    meta_tag: Yup.string().trim().required("Please enter a meta tag "),
+    youtube_link: Yup.string().trim(),
+    meta_description: Yup.string().trim().required("Please enter a meta description"),
+    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    body: Yup.string().trim().required("Please enter the content"),
+    image: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+
+export const SeoAddSchema = Yup.object({
+    page: Yup.string().trim().required("Please enter a page name"),
+    path: Yup.string().trim().required("Please enter a page path"),
+    meta_title: Yup.string().trim().required("Please enter the meta title"),
+    meta_description: Yup.string().trim().required("Please enter the meta description"),
+});

@@ -16,6 +16,11 @@ const Amenities = lazy(() => import('./pages/Amenities'));
 const EditProject = lazy(() => import('./pages/EditProject'));
 const Rentals = lazy(() => import('./pages/Rentals'));
 const KeyHandOver = lazy(() => import('./pages/KeyHandOver'));
+const Testimonieals = lazy(() => import('./pages/Testimonieals'));
+const Blogs = lazy(() => import('./pages/Blogs'));
+const NewAndEvents = lazy(() => import('./pages/NewAndEvents'));
+const Seo = lazy(() => import('./pages/Seo'));
+
 
 function App() {
   return (
@@ -36,7 +41,11 @@ function App() {
               <Route path='/add-project' element={<AddProject />} />
               <Route path='/edit-project/:slug' element={<EditProject />} />
               <Route path='/key-handover' element={<KeyHandOver />} />
+              <Route path='/testimonieals' element={<Testimonieals />} />
+              <Route path='/blogs' element={<Blogs />} />
+              <Route path='/news-and-events' element={<NewAndEvents />} />
               <Route path='/contact' element={<Contact />} />
+              <Route path='/seo' element={<Seo />} />
             </Route>
           </Route>
         </Routes>

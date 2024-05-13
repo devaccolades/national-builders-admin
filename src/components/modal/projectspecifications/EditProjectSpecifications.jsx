@@ -5,94 +5,97 @@ import { SpecificationAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
 import { AddProjectSpecificationApi, EditSpecificationApi } from '../../../services/services';
 
-function EditProjectSpecifications({ isModal, setModal,fetchData,editData }) {
-    const initialValues = {
-        project: editData.project || "",
-          title: editData.title || "",
-          description: editData.description || "",
+function EditProjectSpecifications({ isModal, setModal, fetchData, editData }) {
+  const initialValues = {
+    project: editData.project || "",
+    title: editData.title || "",
+    description: editData.description || "",
+  }
+  const {
+    values,
+    errors,
+    touched,
+    resetForm,
+    handleBlur,
+    handleSubmit,
+    handleChange,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: SpecificationAddSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const res = await EditSpecificationApi(editData?.id, values)
+        const { StatusCode, message, data } = res.data;
+        if (StatusCode === 6000) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: `${values?.title} Specification Updated !`,
+            showConfirmButton: false,
+            timer: 1500,
+            width: 600,
+          })
+          resetForm()
+          setModal(false)
+          fetchData()
+        }
+      } catch (error) {
+        console.log(error);
       }
-      const {
-          values,
-          errors,
-          touched,
-          resetForm,
-          handleBlur,
-          handleSubmit,
-          handleChange,
-      } = useFormik({
-          initialValues: initialValues,
-          validationSchema: SpecificationAddSchema,
-          onSubmit: async (values, { setSubmitting }) => {
-            try {
-              const res = await EditSpecificationApi(editData?.id,values)
-              const { StatusCode, message, data } = res.data;
-              if (StatusCode === 6000){
-                Swal.fire({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: `${values?.title} Specification Updated !`,
-                  showConfirmButton: false,
-                  timer: 1500,
-                  width:600,
-                })
-                resetForm()
-                setModal(false)
-                fetchData()
-              }
-            } catch (error) {
-              console.log(error);
-            }
-              
-          },
-      });
+
+    },
+  });
   return (
     <Container className={isModal && "active"}>
-    <Overlay onClick={() => setModal(false)}></Overlay>
-    <Modal>
+      <Overlay onClick={() => setModal(false)}></Overlay>
+      <Modal>
         <div>
-            <Heding>Edit Specification</Heding>
-            <Form onSubmit={handleSubmit}>
-                <Cover>
-                    <Label>Title</Label>
-                    <div className='w-full'>
-                        <Input
-                            placeholder='Enter Title'
-                            type="text"
-                            name={"title"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.title}
-                        />
-                        {touched.title && errors.title && (
-                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
-                        )}
-                    </div>
-                </Cover>
-                <Cover>
-                    <Label>Description</Label>
-                    <div className='w-full'>
-                        <TextArea
-                            placeholder='Enter Description'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.description}
-                            name={"description"}
-                        >
-                        </TextArea>
-                        {touched.description && errors.description && (
-                            <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
-                        )}
-                    </div>
-                </Cover>
-                <SubmitBtn>
-                    <button type='submit'>
-                        Submit
-                    </button>
-                </SubmitBtn>
-            </Form>
+          <Heding>Edit Specification</Heding>
+          <Form onSubmit={handleSubmit}>
+            <Cover>
+              <Label>Title</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter Title'
+                  type="text"
+                  name={"title"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.title}
+                />
+                {touched.title && errors.title && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.title}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Description</Label>
+              <div className='w-full'>
+                <TextArea
+                  placeholder='Enter Description'
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.description}
+                  name={"description"}
+                >
+                </TextArea>
+                {touched.description && errors.description && (
+                  <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
+                )}
+              </div>
+            </Cover>
+            <SubmitBtn>
+              <button onClick={() => setModal(false)} className='cancel' type='button'>
+                Cancel
+              </button>
+              <button className='submit' type='submit'>
+                Submit
+              </button>
+            </SubmitBtn>
+          </Form>
         </div>
-    </Modal>
-</Container>
+      </Modal>
+    </Container>
   )
 }
 
@@ -220,12 +223,22 @@ const TextArea = styled.textarea`
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;
-  button{
+  gap: 1rem;
+  .submit{
   padding:6px 30px;
     font-size: 16px;
     text-align: center;
     background-color: var(--lightblue);
-    color: black;
+    color: white;
     border-radius: 10px;
+ }
+ .cancel{
+  padding:6px 30px;
+    font-size: 16px;
+    text-align: center;
+    /* background-color: var(--lightblue); */
+    color: white;
+    border-radius: 10px;
+    border: 1px solid var(--bordercolor);
  }
 `

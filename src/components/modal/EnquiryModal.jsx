@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 
-function EnquiryModal({ isModal, setModal, item }) {
+function EnquiryModal({ isModal, setModal, showData }) {
   return (
     <Container className={isModal && "active"}>
     <Overlay onClick={() => setModal(false)}></Overlay>
@@ -11,27 +11,27 @@ function EnquiryModal({ isModal, setModal, item }) {
             <Content className='rounded-[.5rem] p-6'>
             <div className='py-4 grid grid-cols-2'>
                 <p>Date</p>
-                <p>2023-10-14</p>
+                <p>{showData?.enquiry_date}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Name</p>
-                <p>Sifan</p>
+                <p>{showData?.name}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Email</p>
-                <p>sifan007sfi@gmail.com</p>
+                <p>{showData?.email}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Phone</p>
-                <p>9562050658</p>
+                <p>{showData?.phone}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Message</p>
-                <p>HI </p>
+                <p>{showData?.message}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Project</p>
-                <p>National Builders</p>
+                <p>{showData?.project?.name}</p>
             </div>
 
             </Content>

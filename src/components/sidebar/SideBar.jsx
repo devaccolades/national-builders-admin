@@ -1,58 +1,101 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 // logo
 import logo from '../../assets/images/logo/national-builders-logo.svg'
 // Icons
 import homeIcon from '../../assets/icons/home.svg'
+import homeIconBlue from '../../assets/icons/home-blue.svg'
 import enguiryIcon from '../../assets/icons/enq-list.svg'
+import enguiryIconBlue from '../../assets/icons/enq-list-blue.svg'
 import projectIcon from '../../assets/icons/projects.svg'
+import projectIconBlue from '../../assets/icons/projects-blue.svg'
 import contactIcon from '../../assets/icons/contact.svg'
+import contactIconBlue from '../../assets/icons/contact-blue.svg'
 import amenitiesIcon from '../../assets/icons/amenities.svg'
+import amenitiesIconBlue from '../../assets/icons/amenities-blue.svg'
 import rentalsIcon from '../../assets/icons/rentals.svg'
+import rentalsIconBlue from '../../assets/icons/rentals-blue.svg'
 import keyhandoverIcon from '../../assets/icons/keyhandover.svg'
-
+import keyhandoverIconBlue from '../../assets/icons/keyhandover-blue.svg'
+import testimoniealIcon from '../../assets/icons/testimonials.svg'
+import testimoniealIconBlue from '../../assets/icons/testimonials-blue.svg'
+import blogsIcon from '../../assets/icons/blogs.svg'
+import blogsIconBlue from '../../assets/icons/blogs-blue.svg'
+import NewAndEventsIcon from '../../assets/icons/newsandevents.svg'
+import NewAndEventsIconBlue from '../../assets/icons/newsandevents-blue.svg'
+import seoIcon from '../../assets/icons/seo.svg'
+import seoIconBlue from '../../assets/icons/seoblue.svg'
 
 function SideBar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
   const navList = [
     {
       id: 1,
       title: "Enquires",
-      image: enguiryIcon,
+      image: currentPath === '/enquiry' ? enguiryIconBlue : enguiryIcon,
       route: "/enquiry",
     },
     {
       id: 2,
       title: "Project",
-      image: projectIcon,
+      image: currentPath === '/project' ? projectIconBlue : projectIcon,
       route: "/project",
     },
     {
       id: 3,
       title: "Rentals",
-      image: rentalsIcon,
+      image: currentPath === '/rentals' ? rentalsIconBlue : rentalsIcon,
       route: "/rentals",
     },
     {
       id: 4,
       title: "Amenities",
-      image: amenitiesIcon,
+      image: currentPath === '/amenities' ? amenitiesIconBlue : amenitiesIcon,
       route: "/amenities",
     },
     
     {
       id: 5,
+      title: "Testimonieals",
+      image: currentPath === '/testimonieals' ? testimoniealIconBlue : testimoniealIcon,
+      route: "/testimonieals",
+    },
+    
+    {
+      id: 5,
       title: "Key Handover",
-      image: keyhandoverIcon,
+      image: currentPath === '/key-handover' ? keyhandoverIconBlue : keyhandoverIcon,
       route: "/key-handover",
     },
-     
+
     {
       id: 6,
+      title: "Blogs",
+      image: currentPath ===  '/blogs' ? blogsIconBlue : blogsIcon,
+      route: "/blogs",
+    },
+    {
+      id: 7,
+      title: "News & Events",
+      image: currentPath === '/news-and-events' ? NewAndEventsIconBlue : NewAndEventsIcon,
+      route: "/news-and-events",
+    },
+     
+     
+    {
+      id: 8,
       title: "Contact",
-      image: contactIcon,
+      image: currentPath === '/contact' ? contactIconBlue : contactIcon,
       route: "/contact",
+    },
+    {
+      id: 9,
+      title: "Seo",
+      image: currentPath === '/seo' ? seoIconBlue : seoIcon,
+      route: "/seo",
     },
     
   ]
@@ -65,10 +108,10 @@ function SideBar() {
       </Logo>
       <MainTitle to="/" className='grid grid-cols-[5rem,0.3rem,1fr]'>
         <LogoMain className='flex justify-center'>
-          <img src={homeIcon} className='w-5' alt="" />
+          <img src={currentPath === '/' ? homeIconBlue : homeIcon} className='w-5' alt="" />
         </LogoMain>
         <p className='-ms-4 text-gray-800'>|</p>
-        <Span className={``}>Dashboard</Span>
+        <Span className={`${currentPath === '/' ? "active"  :""}`}>Dashboard</Span>
       </MainTitle>
       <NavList>
         {navList.map((item, index) => (
@@ -76,7 +119,7 @@ function SideBar() {
             <Icon>
               <img src={item.image} alt={item.title} />
             </Icon>
-            <Text className={``}>
+            <Text className={`${currentPath === item.route ? "text-[#519bf4]" : ""}`}>
               {item.title}
             </Text>
           </Nav>

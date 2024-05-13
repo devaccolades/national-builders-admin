@@ -138,8 +138,113 @@ const AddRentalsApi = (values) => {
     });
 };
 
+const AddKeyHandOverApi = (values) => {
+  return api
+    .post('general/key-handover/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddTestimoniealsApi = (values) => {
+  return api
+    .post('general/testimonieals/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddBlogsApi = (values) => {
+  return api
+    .post('general/blogs/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddNewsAndEventsApi = (values) => {
+  return api
+    .post('general/news-and-events/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const AddSeoApi = (values) => {
+  return api
+    .post('general/seo/', values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 // ----------------------------Get methods-------------------------------------//
+
+const getProjectCountApi = () => {
+  return api
+    .get('project/project-count-get/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getEnquiryApi = () => {
+  return api
+    .get('project/enquiry-list/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 
 const getBranchApi = () => {
   return api
@@ -259,8 +364,73 @@ const getKeyHandOversApi = () => {
       throw error;
     });
 };
+const getTestimoniealsApi = () => {
+  return api
+    .get('general/testimonieals/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getProjectDropDownApi = () => {
+  return api
+    .get('project/project-dropdown-list/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+const getBlogsApi = () => {
+  return api
+    .get('general/blogs/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getNewsAndEventsApi = () => {
+  return api
+    .get('general/news-and-events/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getSeoApi = () => {
+  return api
+    .get('general/seo/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 // ----------------------------Put / patch methods-------------------------------------//
+
+const EditEnquiryReadedApi = (values, id) => {
+  return api
+    .patch(`project/enquiry/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 const EditBranchApi = (values, id) => {
   return api
@@ -278,6 +448,7 @@ const EditBranchApi = (values, id) => {
       throw error;
     });
 };
+
 
 const ChangeBrangeSelectionApi = (values, id) => {
   return api
@@ -430,6 +601,89 @@ const EditRentaleApi = (values,id) => {
       throw error;
     });
 };
+const EditKeyHandOverApi = (values,id) => {
+  return api
+    .patch(`general/key-handover/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const EditTestimoniealsApi = (values,id) => {
+  return api
+    .patch(`general/testimonieals/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const EditBlogApi = (values,id) => {
+  return api
+    .patch(`general/blogs/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+const EditNewsAndEventApi = (values,id) => {
+  return api
+    .patch(`general/news-and-events/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+const EditSeoApi = (values,id) => {
+  return api
+    .patch(`general/seo/${id}/`, values, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
 
 // ----------------------------Delete methods-------------------------------------//
 const DeleteBranchApi = (id) => {
@@ -566,9 +820,96 @@ const DeleteRentalApi = (id) => {
       throw error;
     });
 };
+const DeleteKeyHandOverApi = (id) => {
+  return api
+    .delete(`general/key-handover/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
+const DeleteTestimoniealsApi = (id) => {
+  return api
+    .delete(`general/testimonieals/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+const DeleteBlogApi = (id) => {
+  return api
+    .delete(`general/blogs/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const DeleteNewsAndEventApi = (id) => {
+  return api
+    .delete(`general/news-and-events/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
+
+const DeleteSeoApi = (id) => {
+  return api
+    .delete(`general/seo/${id}/`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.error('Error posting:', error);
+      throw error;
+    });
+};
 
 export {
+  getProjectCountApi,
+  
+  getEnquiryApi,
+  EditEnquiryReadedApi,
+
   AddBranchApi,
   getBranchApi,
   EditBranchApi,
@@ -586,6 +927,7 @@ export {
   getAllProjectsApi,
   getSingleProjectsApi,
   DeleteProjectApi,
+  getProjectDropDownApi,
 
   AddProjectImagesApi,
   getProjectImagessApi,
@@ -616,4 +958,27 @@ export {
   DeleteRentalApi,
 
   getKeyHandOversApi,
+  AddKeyHandOverApi,
+  EditKeyHandOverApi,
+  DeleteKeyHandOverApi,
+
+  getTestimoniealsApi,
+  AddTestimoniealsApi,
+  EditTestimoniealsApi,
+  DeleteTestimoniealsApi,
+
+  getBlogsApi,
+  AddBlogsApi,
+  EditBlogApi,
+  DeleteBlogApi,
+
+  getNewsAndEventsApi,
+  AddNewsAndEventsApi,
+  EditNewsAndEventApi,
+  DeleteNewsAndEventApi,
+
+  getSeoApi,
+  AddSeoApi,
+  EditSeoApi,
+  DeleteSeoApi,
 };

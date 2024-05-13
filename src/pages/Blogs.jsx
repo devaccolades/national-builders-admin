@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import ContentTitle from '../components/common/ContentTitle';
-import { getKeyHandOversApi } from '../services/services';
 import { Spinner } from '@material-tailwind/react';
 import NoDataFound from '../components/common/NoDataFound';
+import { getBlogsApi } from '../services/services';
 import { FaEdit } from 'react-icons/fa';
-import AddKeyHandOver from '../components/modal/keyhandover/AddKeyHandOver';
-import EditKeyHandOver from '../components/modal/keyhandover/EditKeyHandOver';
+import AddBlogs from '../components/modal/blogs/AddBlogs';
+import EditBlogs from '../components/modal/blogs/EditBlogs';
+import { useNavigate } from 'react-router-dom';
 
-function KeyHandOver() {
+function Blogs() {
     const [data, setData] = useState(null)
-    const [isModal, setModal] = useState(false)
-    const [isEditModal, setEditModal] = useState(false)
-    const [editData, setEditdata] = useState('')
+    const [isModal,setModal] = useState(false)
+    const [isEditModal,setEditModal] = useState(false)
+    const [editData,setEditData] = useState('')
 
     const fetchData = async () => {
         try {
-            const res = await getKeyHandOversApi()
+            const res = await getBlogsApi()
             const { StatusCode, data } = res.data;
             if (StatusCode === 6000) {
                 setData(data)
@@ -25,7 +26,6 @@ function KeyHandOver() {
             }
         } catch (error) {
             setData([])
-            console.log(error);
         }
     }
     useEffect(() => {
@@ -34,9 +34,9 @@ function KeyHandOver() {
     return (
         <Section>
             <div className='grid grid-cols-2'>
-                <ContentTitle text={"Key Handover"} />
+                <ContentTitle text={"Blogs"} />
                 <Button className='flex justify-end items-start'>
-                    <button onClick={() => setModal(true)}>Add Key Handover</button>
+                    <button onClick={() => setModal(true)}>Add Blogs</button>
                 </Button>
             </div>
             <TableSection>
@@ -52,16 +52,22 @@ function KeyHandOver() {
                             <Tr>
                                 <Th>SI.no</Th>
                                 <Th>Image</Th>
-                                <Th>Name</Th>
+                                <Th>Title</Th>
+                                <Th>Body</Th>
+                                <Th>Slug</Th>
                                 <Th>Action</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {data.map((key, index) => (
-                                <Tr className='cursor-pointer' key={index} onClick={() => { setEditModal(true), setEditdata(key) }}>
+                            {data.map((blog, index) => (
+                                <Tr className='cursor-pointer' key={index}  onClick={()=>{setEditData(blog) ,setEditModal(true)}}>
                                     <Td>{index + 1}</Td>
-                                    <Td><img src={key?.image} alt="" /></Td>
-                                    <Td>{key?.name}</Td>
+                                    <Td><img src={blog?.image} alt={blog?.image_alt} /></Td>
+                                    <Td>{blog?.title}</Td>
+                                    <Td body={blog?.body ? true : false} className='p-3'>
+                                        <Content dangerouslySetInnerHTML={{ __html: blog?.body }} />
+                                    </Td>
+                                    <Td>{blog?.slug}</Td>
                                     <Td><FaEdit className='mx-auto w-6 h-6 cursor-pointer' /></Td>
                                 </Tr>
                             ))}
@@ -70,13 +76,13 @@ function KeyHandOver() {
                     </Table>
                 )}
             </TableSection>
-            <AddKeyHandOver isModal={isModal} setModal={setModal} fetchData={fetchData} />
-            {isEditModal && editData &&<EditKeyHandOver isModal={isEditModal} setModal={setEditModal} fetchData={fetchData} editData={editData} />}
+           {!isEditModal && <AddBlogs isModal={isModal} setModal={setModal} fetchData={fetchData}/>}
+            {editData && isEditModal && <EditBlogs isModal={isEditModal} setModal={setEditModal} fetchData={fetchData} editData={editData}/>}
         </Section>
     )
 }
 
-export default KeyHandOver
+export default Blogs
 
 const Section = styled.div``
 
@@ -91,6 +97,7 @@ const Button = styled.h3`
     border-radius: 10px;
  }
 `;
+
 const TableSection = styled.div`
     width: 100%;
 `
@@ -108,7 +115,7 @@ const Thead = styled.thead`
 const Tr = styled.tr`
     display: grid;
     align-items: start;
-    grid-template-columns: 4rem 1fr 1fr 1fr;
+    grid-template-columns: 4rem 10rem 20rem 1fr 16rem 6rem;
     margin-bottom: 1rem;
     gap:4px;
 `;
@@ -131,12 +138,11 @@ const Td = styled.td`
     text-align: center;
     font-size:16px;
     text-transform: capitalize;
-
     /* padding:10px; */
     height: 8rem;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: ${props => props.body ? 'start' : 'center'};
     border: 1px solid #525355;
     background-color: #3a3838;
     &::-webkit-scrollbar {
@@ -147,6 +153,19 @@ const Td = styled.td`
         margin: 0 auto;
     }
 `;
+
+const Content =styled.div`
+text-align: start;
+    strong{
+        font-family: mont-bold;
+    }
+    H1,H2,H3,H4,H5,H6{
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 20px;
+        font-family: mont-bold;
+    }
+`
 
 const Loader = styled.div`
   display: flex;

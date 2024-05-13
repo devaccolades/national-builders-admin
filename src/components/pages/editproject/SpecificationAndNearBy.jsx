@@ -144,7 +144,7 @@ function SpecificationAndNearBy({ projectId }) {
         ) : (
           <div className='grid grid-cols-2 gap-5 w-[90%] mx-auto'>
             {specifications.map((specific, indes) => (
-              <div className='flex flex-col gap-1 hover:text-white cursor-pointer'>
+              <div className='flex flex-col gap-1 border border-gray-800 rounded-[1.1rem] p-5 hover:text-white cursor-pointer'>
                 <div className='flex flex-row justify-between'>
                   <p className='title'>{specific?.title}</p>
                   <div className='flex flex-row gap-8 items-center pe-10'>

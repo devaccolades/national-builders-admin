@@ -5,116 +5,119 @@ import { NearByAddSchema } from '../../../Validations/Validations';
 import { AddProjectDistanceApi } from '../../../services/services';
 import Swal from 'sweetalert2';
 function AddNearBy({ isModal, setModal, fetchData, projectId }) {
-    const initialValues = {
-        project: projectId || "",
-        location_name: "",
-        distance: "",
-        measurement_unit: "",
-    }
-    const {
-        values,
-        errors,
-        touched,
-        resetForm,
-        handleBlur,
-        handleSubmit,
-        handleChange,
-    } = useFormik({
-        initialValues: initialValues,
-        validationSchema: NearByAddSchema,
-        onSubmit: async (values, { setSubmitting }) => {
-              try {
-                const res = await AddProjectDistanceApi(values)
-                const { StatusCode , data} = res.data;
-                if (StatusCode===6001){
-                  setModal(false)
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'New Near By Added !',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width:600,
-                  })
-                  resetForm();
-                  fetchData();
-                }else if (StatusCode === 6002){
-                  alert('Somthing went wrong')
-                }
-              } catch (error) {
-                console.log(error);
-                alert('Somthing went wrong',error)
-              } finally {
-                setSubmitting(false);
-              }
-        },
-    });
-    return (
-        <Container className={isModal && "active"}>
-            <Overlay onClick={() => setModal(false)}></Overlay>
-            <Modal>
-                <div>
-                    <Heding>Add Near By Locations</Heding>
-                    <Form onSubmit={handleSubmit}>
-                        <Cover>
-                            <Label>Location Name</Label>
-                            <div className='w-full'>
-                                <Input
-                                    placeholder='Enter location name'
-                                    type="text"
-                                    name={"location_name"}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.location_name}
-                                />
-                                {touched.location_name && errors.location_name && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.location_name}</div>
-                                )}
-                            </div>
-                        </Cover>
+  const initialValues = {
+    project: projectId || "",
+    location_name: "",
+    distance: "",
+    measurement_unit: "",
+  }
+  const {
+    values,
+    errors,
+    touched,
+    resetForm,
+    handleBlur,
+    handleSubmit,
+    handleChange,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: NearByAddSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const res = await AddProjectDistanceApi(values)
+        const { StatusCode, data } = res.data;
+        if (StatusCode === 6001) {
+          setModal(false)
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'New Near By Added !',
+            showConfirmButton: false,
+            timer: 1500,
+            width: 600,
+          })
+          resetForm();
+          fetchData();
+        } else if (StatusCode === 6002) {
+          alert('Somthing went wrong')
+        }
+      } catch (error) {
+        console.log(error);
+        alert('Somthing went wrong', error)
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+  return (
+    <Container className={isModal && "active"}>
+      <Overlay onClick={() => setModal(false)}></Overlay>
+      <Modal>
+        <div>
+          <Heding>Add Near By Locations</Heding>
+          <Form onSubmit={handleSubmit}>
+            <Cover>
+              <Label>Location Name</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter location name'
+                  type="text"
+                  name={"location_name"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.location_name}
+                />
+                {touched.location_name && errors.location_name && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.location_name}</div>
+                )}
+              </div>
+            </Cover>
 
-                        <Cover>
-                            <Label>Distance (6.6)</Label>
-                            <div className='w-full grid grid-cols-2 gap-4'>
-                                <div>
-                                    <Input
-                                        placeholder='Enter Distance'
-                                        type="number"
-                                        name={"distance"}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.distance}
-                                    />
-                                    {touched.distance && errors.distance && (
-                                        <div className="text-red-500 text-sm pt-1 -mb-3">{errors.distance}</div>
-                                    )}
-                                </div>
-                                <div>
-                                    <Select name='measurement_unit'
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.measurement_unit}
-                                    >
-                                        <Option value='' disabled>Please select Unit</Option>
-                                        <Option value='km'>K.M</Option>
-                                        <Option value='meter'>Meter</Option>
-                                    </Select>
-                                    {touched.measurement_unit && errors.measurement_unit && (
-                                        <div className="text-red-500 text-sm pt-1 -mb-3">{errors.measurement_unit}</div>
-                                    )}
-                                </div>
-                            </div>
-                        </Cover>
-                        <SubmitBtn>
-                            <button type='submit'>
-                                Submit
-                            </button>
-                        </SubmitBtn>
-                    </Form>
+            <Cover>
+              <Label>Distance (6.6)</Label>
+              <div className='w-full grid grid-cols-2 gap-4'>
+                <div>
+                  <Input
+                    placeholder='Enter Distance'
+                    type="number"
+                    name={"distance"}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.distance}
+                  />
+                  {touched.distance && errors.distance && (
+                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.distance}</div>
+                  )}
                 </div>
-            </Modal>
-        </Container >
-    )
+                <div>
+                  <Select name='measurement_unit'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.measurement_unit}
+                  >
+                    <Option value='' disabled>Please select Unit</Option>
+                    <Option value='km'>K.M</Option>
+                    <Option value='meter'>Meter</Option>
+                  </Select>
+                  {touched.measurement_unit && errors.measurement_unit && (
+                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.measurement_unit}</div>
+                  )}
+                </div>
+              </div>
+            </Cover>
+            <SubmitBtn>
+              <button onClick={() => setModal(false)} className='cancel' type='button'>
+                Cancel
+              </button>
+              <button className='submit' type='submit'>
+                Submit
+              </button>
+            </SubmitBtn>
+          </Form>
+        </div>
+      </Modal>
+    </Container >
+  )
 }
 
 export default AddNearBy
@@ -240,13 +243,23 @@ const TextArea = styled.textarea`
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;
-  button{
+  gap: 1rem;
+  .submit{
   padding:6px 30px;
     font-size: 16px;
     text-align: center;
     background-color: var(--lightblue);
-    color: black;
+    color: white;
     border-radius: 10px;
+ }
+ .cancel{
+  padding:6px 30px;
+    font-size: 16px;
+    text-align: center;
+    /* background-color: var(--lightblue); */
+    color: white;
+    border-radius: 10px;
+    border: 1px solid var(--bordercolor);
  }
 `
 const Select = styled.select`
