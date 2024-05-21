@@ -4,7 +4,10 @@ import { useFormik } from 'formik';
 import { BranchEditSchema } from '../../../Validations/Validations';
 import { DeleteBranchApi, EditBranchApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function EditBranch({ isModal, setModal, editdData }) {
+  const [isLoading, setLoading] = useState(false)
   const [image, setImage] = useState(null)
   const initialValues = {
     location: editdData.location || "",
@@ -12,7 +15,8 @@ function EditBranch({ isModal, setModal, editdData }) {
     iframe: editdData.iframe || "",
     address: editdData.address || "",
     email: editdData.email || "",
-    phone_number: editdData.phone_number || ""
+    phone_number: editdData.phone_number || "",
+    image_alt: editdData.image_alt || ""
   }
   const {
     values,
@@ -32,8 +36,9 @@ function EditBranch({ isModal, setModal, editdData }) {
       formData.append('iframe', values.iframe);
       formData.append('address', values.address);
       formData.append('email', values.email);
-      formData.append('phone_number', values.phone_number);
+      formData.append('phone_number', values.phone_number);      
       try {
+        setLoading(true)
         const res = await EditBranchApi(values.image ? formData : values, editdData.id)
         const { StatusCode , data} = res.data;
         if (StatusCode === 6000) {
@@ -61,6 +66,7 @@ function EditBranch({ isModal, setModal, editdData }) {
         console.log(error);
         alert('Something wrong')
       } finally {
+        setLoading(false)
         setSubmitting(false);
       }
 
@@ -81,6 +87,7 @@ function EditBranch({ isModal, setModal, editdData }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true)
           const res = await DeleteBranchApi( editdData.id);
           const { StatusCode , message} = res.data;
           if (StatusCode === 6000) {
@@ -106,6 +113,8 @@ function EditBranch({ isModal, setModal, editdData }) {
         } catch (error) {
           console.log(error);
           alert('Something wrong');
+        } finally{
+          setLoading(false)
         }
       }
     });
@@ -150,6 +159,22 @@ function EditBranch({ isModal, setModal, editdData }) {
                 />
                 {touched.image && errors.image && (
                   <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Alt Tag</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter a alt tag'
+                  type="text"
+                  name={"image_alt"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.image_alt}
+                />
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                 )}
               </div>
             </Cover>
@@ -210,14 +235,14 @@ function EditBranch({ isModal, setModal, editdData }) {
                 )}
               </div>
             </Cover>
-            <SubmitBtn>
+            {isLoading?(<ButtonLoading/>):(<SubmitBtn>
               <button type='button' className='delete' onClick={DeleteBranch}>
                 Delete
               </button>
               <button type='submit' className='submit'>
                 Submit
               </button>
-            </SubmitBtn>
+            </SubmitBtn>)}
           </Form>
         </div>
       </Modal>

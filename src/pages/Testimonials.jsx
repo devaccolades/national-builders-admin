@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import ContentTitle from '../components/common/ContentTitle';
 import { Spinner } from '@material-tailwind/react';
-import { getProjectDropDownApi, getTestimoniealsApi } from '../services/services';
+import { getProjectDropDownApi, getTestimonialsApi } from '../services/services';
 import { FaEdit } from 'react-icons/fa';
-import AddTestimonieals from '../components/modal/testimonieals/AddTestimonieals';
-import EditTesimonieals from '../components/modal/testimonieals/EditTesimonieals';
+import AddTestimonials from '../components/modal/testimonials/AddTestimonials';
+import EditTestimonials from '../components/modal/testimonials/EditTestimonials';
+import NoDataFound from '../components/common/NoDataFound';
 
-function Testimonieals() {
+function Testimonials() {
     const [data,setData] = useState(null)
     const [isModal,setModal] = useState(false)
     const [isEditModal,setEditModal] = useState(false)
@@ -17,7 +18,7 @@ function Testimonieals() {
 
     const fetchData = async ()=>{
         try {
-            const res = await getTestimoniealsApi();
+            const res = await getTestimonialsApi();
             const { StatusCode, data } = res.data;
             if (StatusCode === 6000) {
                 setData(data)
@@ -46,9 +47,9 @@ function Testimonieals() {
     return (
         <Section>
             <div className='grid grid-cols-2'>
-                <ContentTitle text={"Testimonieals"} />
+                <ContentTitle text={"Testimonials"} />
                 <Left className='flex justify-end items-start'>
-                    <button onClick={() => setModal(true)}>Add Testimonieals</button>
+                    <button onClick={() => setModal(true)}>Add Testimonials</button>
                 </Left>
             </div>
             <TableContainer>
@@ -83,13 +84,13 @@ function Testimonieals() {
                     </Tbody>
                 </Table>)}
             </TableContainer>
-           {projectData.length!==0 && <AddTestimonieals isModal={isModal} setModal={setModal} fetchData={fetchData} projecDropDowntData={projectData}/>}
-           {projectData.length!==0 && editData && isEditModal  && <EditTesimonieals isModal={isEditModal} setModal={setEditModal} fetchData={fetchData} editData={editData} projecDropDowntData={projectData}/>}
+           <AddTestimonials isModal={isModal} setModal={setModal} fetchData={fetchData} projecDropDowntData={projectData}/>
+           {editData && isEditModal  && <EditTestimonials isModal={isEditModal} setModal={setEditModal} fetchData={fetchData} editData={editData} projecDropDowntData={projectData}/>}
         </Section>
     )
 }
 
-export default Testimonieals
+export default Testimonials
 const Section = styled.div``
 
 const Left = styled.h3`

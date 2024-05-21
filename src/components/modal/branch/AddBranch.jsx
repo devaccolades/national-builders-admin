@@ -4,7 +4,10 @@ import { useFormik } from 'formik';
 import { BranchAddSchema } from '../../../Validations/Validations';
 import { AddBranchApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function AddBranch({ isModal, setModal }) {
+  const [isLoading, setLoading] = useState(false)
   const [image, setImage] = useState(null)
   const initialValues = {
     location: "",
@@ -12,7 +15,8 @@ function AddBranch({ isModal, setModal }) {
     iframe: "",
     address: "",
     email: "",
-    phone_number: ""
+    phone_number: "",
+    image_alt: ""
   }
   const {
     values,
@@ -33,10 +37,12 @@ function AddBranch({ isModal, setModal }) {
       formData.append('address', values.address);
       formData.append('email', values.email);
       formData.append('phone_number', values.phone_number);
+      formData.append('image_alt', values.image_alt);
       try {
+        setLoading(true)
         const res = await AddBranchApi(formData)
-        const { StatusCode , data} = res.data;
-        if (StatusCode===6001){
+        const { StatusCode, data } = res.data;
+        if (StatusCode === 6001) {
           setModal(false)
           Swal.fire({
             position: 'top-end',
@@ -44,16 +50,17 @@ function AddBranch({ isModal, setModal }) {
             title: 'New Branch Added !',
             showConfirmButton: false,
             timer: 1500,
-            width:600,
+            width: 600,
           })
           resetForm();
-        }else if (StatusCode === 6002){
-          alert(`${data.image[0] } You can't Upload svg images`|| 'Somthing went wrong')
+        } else if (StatusCode === 6002) {
+          alert(`${data.image[0]} You can't Upload svg images` || 'Somthing went wrong')
         }
       } catch (error) {
         console.log(error);
         alert(error.data.image[0] || 'Somthing went wrong')
       } finally {
+        setLoading(false)
         setSubmitting(false);
       }
     },
@@ -70,7 +77,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Location</Label>
               <div className='w-full'>
                 <Input
-                placeholder='Please enter the branch location'
+                  placeholder='Please enter the branch location'
                   type="text"
                   name={"location"}
                   onChange={handleChange}
@@ -92,15 +99,31 @@ function AddBranch({ isModal, setModal }) {
                   type="file"
                   name={"image"}
                   onChange={(event) => {
-                    handleChange(event); 
-                    setImage(event.currentTarget.files[0]); 
+                    handleChange(event);
+                    setImage(event.currentTarget.files[0]);
                   }}
                   onBlur={handleBlur}
                   value={values.image}
-                  accept = "image/png, image/jpeg, image/jpg, image/webp"
-                  />
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                />
                 {touched.image && errors.image && (
                   <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Alt Tag</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter a alt tag'
+                  type="text"
+                  name={"image_alt"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.image_alt}
+                />
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                 )}
               </div>
             </Cover>
@@ -108,7 +131,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Iframe</Label>
               <div className='w-full'>
                 <TextArea
-                placeholder='Please enter the map url link'
+                  placeholder='Please enter the map url link'
                   name={"iframe"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -123,7 +146,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Email</Label>
               <div className='w-full'>
                 <Input
-                placeholder='Please enter the branch email id'
+                  placeholder='Please enter the branch email id'
                   type="text"
                   name={"email"}
                   onChange={handleChange}
@@ -139,7 +162,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Phone Number</Label>
               <div className='w-full'>
                 <TextArea
-                placeholder='Please enter the branch phone number'
+                  placeholder='Please enter the branch phone number'
                   name={"phone_number"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -154,7 +177,7 @@ function AddBranch({ isModal, setModal }) {
               <Label>Branch Address</Label>
               <div className='w-full'>
                 <TextArea
-                placeholder='Please enter the branch address'
+                  placeholder='Please enter the branch address'
                   name={"address"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -165,11 +188,11 @@ function AddBranch({ isModal, setModal }) {
                 )}
               </div>
             </Cover>
-            <SubmitBtn>
+            {(isLoading ? (<ButtonLoading />) : <SubmitBtn>
               <button type='submit'>
                 Submit
               </button>
-            </SubmitBtn>
+            </SubmitBtn>)}
           </Form>
         </div>
       </Modal>

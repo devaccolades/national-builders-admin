@@ -4,146 +4,172 @@ import { useFormik } from 'formik';
 import { KeyHandoverEditSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
 import { DeleteKeyHandOverApi, EditKeyHandOverApi } from '../../../services/services';
+import ButtonLoading from '../../common/ButtonLoading';
 
-function EditKeyHandOver({isModal, setModal,fetchData,editData}) {
-    const [image, setImage] = useState(null)
-    const initialValues = {
-        name: editData.name || "",
-        image: "",
-    }
-    const {
-        values,
-        errors,
-        touched,
-        resetForm,
-        handleBlur,
-        handleSubmit,
-        handleChange,
-    } = useFormik({
-        initialValues: initialValues,
-        validationSchema: KeyHandoverEditSchema,
-        onSubmit: async (values, { setSubmitting }) => {
-            const formData = new FormData();
-            formData.append('name', values.name);
-            formData.append('image', image);
-              try {
-                const res = await EditKeyHandOverApi(values.image ?formData:values,editData.id)
-                const { StatusCode } = res.data;
-                if (StatusCode === 6000) {
-                  setModal(false)
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: `${`"${values.name}" Key Handover Updated !`}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width: 600,
-                  })
-                  resetForm();
-                  fetchData();
-                } else if (StatusCode === 6002) {
-                  alert('Somthing went wrong')
-                }
-              } catch (error) {
-                console.log(error);
-                alert('Something wrong')
-              } finally {
-                setSubmitting(false);
-              }
-        },
-    });
+function EditKeyHandOver({ isModal, setModal, fetchData, editData }) {
+  const [isLoading, setLoading] = useState(false)
+  const [image, setImage] = useState(null)
+  const initialValues = {
+    name: editData.name || "",
+    image: "",
+    image_alt: editData.image_alt || "",
+  }
+  const {
+    values,
+    errors,
+    touched,
+    resetForm,
+    handleBlur,
+    handleSubmit,
+    handleChange,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: KeyHandoverEditSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('image', image);
+      formData.append('image_alt', values.image_alt);
 
-    // Delete Key Handover
-    const DeleteKeyHandOver = async () => {
-        Swal.fire({
-          title: '',
-          text: `Are you sure you want to delete "${editData?.name}" key handover?`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!',
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              const res = await DeleteKeyHandOverApi(editData?.id)
-              const { StatusCode, message } = res.data;
-              if (StatusCode === 6000) {
-                Swal.fire({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: `"${editData.name}" Key handover deleted`,
-                  showConfirmButton: false,
-                  timer: 1500,
-                  width:600,
-                })
-                fetchData()
-                setModal(false)
-              } else {
-                Swal.fire(message || 'Error!', 'Failed to delete Specification.');
-              }
-            } catch (error) {
-              console.error('Error:', error);
-            }
-    
-          }
-        });
+      try {
+        setLoading(true)
+        const res = await EditKeyHandOverApi(values.image ? formData : values, editData.id)
+        const { StatusCode } = res.data;
+        if (StatusCode === 6000) {
+          setModal(false)
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: `${`"${values.name}" Key Handover Updated !`}`,
+            showConfirmButton: false,
+            timer: 1500,
+            width: 600,
+          })
+          resetForm();
+          fetchData();
+        } else if (StatusCode === 6002) {
+          alert('Somthing went wrong')
+        }
+      } catch (error) {
+        console.log(error);
+        alert('Something wrong')
+      } finally {
+        setLoading(false)
+        setSubmitting(false);
       }
+    },
+  });
+
+  // Delete Key Handover
+  const DeleteKeyHandOver = async () => {
+    Swal.fire({
+      title: '',
+      text: `Are you sure you want to delete "${editData?.name}" key handover?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setLoading(true)
+          const res = await DeleteKeyHandOverApi(editData?.id)
+          const { StatusCode, message } = res.data;
+          if (StatusCode === 6000) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: `"${editData.name}" Key handover deleted`,
+              showConfirmButton: false,
+              timer: 1500,
+              width: 600,
+            })
+            fetchData()
+            setModal(false)
+          } else {
+            Swal.fire(message || 'Error!', 'Failed to delete Specification.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        } finally {
+          setLoading(false)
+        }
+
+      }
+    });
+  }
   return (
     <Container className={isModal && "active"}>
-    <Overlay onClick={() => setModal(false)}></Overlay>
-    <Modal>
+      <Overlay onClick={() => setModal(false)}></Overlay>
+      <Modal>
         <div>
-            <Heding>Edit Key Handover</Heding>
-            <Form onSubmit={handleSubmit}>
-                <Cover>
-                    <Label>Image ( 1080 x 1080)</Label>
-                    <div className='w-full'>
-                            <img className='pb-3' src={values.image ? URL.createObjectURL(image): editData.image} alt="Selected" />
-                        <Input
-                            type="file"
-                            name={"image"}
-                            onChange={(event) => {
-                                handleChange(event);
-                                setImage(event.currentTarget.files[0]);
-                            }}
-                            onBlur={handleBlur}
-                            value={values.image}
-                            accept="image/png, image/jpeg, image/jpg, image/webp"
-                        />
-                        {touched.image && errors.image && (
-                            <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
-                        )}
-                    </div>
-                </Cover>
-                <Cover>
-                    <Label>Name</Label>
-                    <div className='w-full'>
-                        <Input
-                            placeholder='Enter name'
-                            type="text"
-                            name={"name"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.name}
-                        />
-                        {touched.name && errors.name && (
-                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
-                        )}
-                    </div>
-                </Cover>
-                <SubmitBtn>
-                <button onClick={()=>DeleteKeyHandOver()} className='delete' type='button'>
-                        Delete
-                    </button>
-                    <button className='submit' type='submit'>
-                        Update
-                    </button>
-                </SubmitBtn>
-            </Form>
+          <Heding>Edit Key Handover</Heding>
+          <Form onSubmit={handleSubmit}>
+            <Cover>
+              <Label>Image ( 1080 x 1080)</Label>
+              <div className='w-full'>
+                <img className='pb-3' src={values.image ? URL.createObjectURL(image) : editData.image} alt="Selected" />
+                <Input
+                  type="file"
+                  name={"image"}
+                  onChange={(event) => {
+                    handleChange(event);
+                    setImage(event.currentTarget.files[0]);
+                  }}
+                  onBlur={handleBlur}
+                  value={values.image}
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                />
+                {touched.image && errors.image && (
+                  <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Image Alt Title</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter the alt title'
+                  type="text"
+                  name={"image_alt"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.image_alt}
+                />
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Name</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter name'
+                  type="text"
+                  name={"name"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.name}
+                />
+                {touched.name && errors.name && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
+                )}
+              </div>
+            </Cover>
+            {isLoading ? (<ButtonLoading />) : (<SubmitBtn>
+              <button onClick={() => DeleteKeyHandOver()} className='delete' type='button'>
+                Delete
+              </button>
+              <button className='submit' type='submit'>
+                Update
+              </button>
+            </SubmitBtn>)}
+          </Form>
         </div>
-    </Modal>
-</Container>
+      </Modal>
+    </Container>
   )
 }
 

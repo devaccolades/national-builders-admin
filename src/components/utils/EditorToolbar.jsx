@@ -47,7 +47,9 @@ export const modules = {
     delay: 500,
     maxStack: 100,
     userOnly: true
-  }
+  },
+  
+  
 };
 
 // Formats objects for setting up the Quill editor

@@ -4,11 +4,15 @@ import { useFormik } from 'formik';
 import { AmenitiesAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
 import { AddAmenitiesApi } from '../../../services/services';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function AddAmenities({ isModal, setModal }) {
+  const [isLoading, setLoading] = useState(false)
   const [logo, setLogo] = useState(null)
   const initialValues = {
     title: "",
     logo: null,
+    image_alt:""
   }
   const {
     values,
@@ -25,7 +29,9 @@ function AddAmenities({ isModal, setModal }) {
       const formData = new FormData();
       formData.append('title', values.title);
       formData.append('logo', logo);
+      formData.append('image_alt', values.image_alt);
       try {
+        setLoading(true)
         const res = await AddAmenitiesApi(formData)
         const { StatusCode, message } = res.data;
         if (StatusCode === 6001) {
@@ -47,6 +53,7 @@ function AddAmenities({ isModal, setModal }) {
         console.log(error);
         alert('Something wrong')
       } finally {
+        setLoading(false)
         setSubmitting(false);
       }
     },
@@ -96,11 +103,27 @@ function AddAmenities({ isModal, setModal }) {
                 )}
               </div>
             </Cover>
-            <SubmitBtn>
+            <Cover>
+              <Label>Logo Alt Title</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter Logo Alt Title'
+                  type="text"
+                  name={"image_alt"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.image_alt}
+                />
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                )}
+              </div>
+            </Cover>
+           {isLoading ? (<ButtonLoading/>):( <SubmitBtn>
               <button type='submit'>
                 Submit
               </button>
-            </SubmitBtn>
+            </SubmitBtn>)}
           </Form>
         </div>
       </Modal>

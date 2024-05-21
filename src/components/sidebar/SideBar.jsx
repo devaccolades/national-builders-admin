@@ -46,39 +46,45 @@ function SideBar() {
     },
     {
       id: 3,
+      title: "Home",
+      image: currentPath === '/home' ? homeIconBlue : homeIcon,
+      route: "/home",
+    },
+    {
+      id: 4,
       title: "Rentals",
       image: currentPath === '/rentals' ? rentalsIconBlue : rentalsIcon,
       route: "/rentals",
     },
     {
-      id: 4,
+      id: 5,
       title: "Amenities",
       image: currentPath === '/amenities' ? amenitiesIconBlue : amenitiesIcon,
       route: "/amenities",
     },
     
     {
-      id: 5,
-      title: "Testimonieals",
-      image: currentPath === '/testimonieals' ? testimoniealIconBlue : testimoniealIcon,
-      route: "/testimonieals",
+      id: 6,
+      title: "Testimonials",
+      image: currentPath === '/testimonials' ? testimoniealIconBlue : testimoniealIcon,
+      route: "/testimonials",
     },
     
     {
-      id: 5,
+      id: 7,
       title: "Key Handover",
       image: currentPath === '/key-handover' ? keyhandoverIconBlue : keyhandoverIcon,
       route: "/key-handover",
     },
 
     {
-      id: 6,
+      id: 8,
       title: "Blogs",
       image: currentPath ===  '/blogs' ? blogsIconBlue : blogsIcon,
       route: "/blogs",
     },
     {
-      id: 7,
+      id: 9,
       title: "News & Events",
       image: currentPath === '/news-and-events' ? NewAndEventsIconBlue : NewAndEventsIcon,
       route: "/news-and-events",
@@ -86,13 +92,13 @@ function SideBar() {
      
      
     {
-      id: 8,
+      id: 10,
       title: "Contact",
       image: currentPath === '/contact' ? contactIconBlue : contactIcon,
       route: "/contact",
     },
     {
-      id: 9,
+      id: 11,
       title: "Seo",
       image: currentPath === '/seo' ? seoIconBlue : seoIcon,
       route: "/seo",

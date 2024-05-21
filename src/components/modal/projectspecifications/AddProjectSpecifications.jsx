@@ -4,8 +4,10 @@ import { useFormik } from 'formik';
 import { SpecificationAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
 import { AddProjectSpecificationApi } from '../../../services/services';
+import ButtonLoading from '../../common/ButtonLoading';
 
 function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
+  const [isLoading, setLoading] = useState(false)
     const initialValues = {
       project: projectId,
         title: "",
@@ -24,6 +26,7 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
         validationSchema: SpecificationAddSchema,
         onSubmit: async (values, { setSubmitting }) => {
           try {
+            setLoading(true)
             const res = await AddProjectSpecificationApi(values)
             const { StatusCode, message, data } = res.data;
             if (StatusCode === 6001){
@@ -41,6 +44,8 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
             }
           } catch (error) {
             console.log(error);
+          } finally{
+            setLoading(false)
           }
             
         },
@@ -84,14 +89,14 @@ function AddProjectSpecifications({ isModal, setModal,fetchData,projectId }) {
                                 )}
                             </div>
                         </Cover>
-                        <SubmitBtn>
+                        {isLoading ? <ButtonLoading/>:(<SubmitBtn>
                            <button onClick={()=>setModal(false)} className='cancel' type='button'>
                                 Cancel
                             </button>
                             <button className='submit' type='submit'>
                                 Submit
                             </button>
-                        </SubmitBtn>
+                        </SubmitBtn>)}
                     </Form>
                 </div>
             </Modal>

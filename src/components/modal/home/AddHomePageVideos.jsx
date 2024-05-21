@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { KeyHandoverAddSchema } from '../../../Validations/Validations';
+import { HomePageVideosSchema } from '../../../Validations/Validations';
+import { AddBranchApi, AddHomePageVideoApi } from '../../../services/services';
 import Swal from 'sweetalert2';
-import { AddKeyHandOverApi } from '../../../services/services';
 import ButtonLoading from '../../common/ButtonLoading';
-
-function AddKeyHandOver({isModal, setModal,fetchData}) {
+function AddHomePageVideos({ isModal, setModal, fetchData }) {
   const [isLoading, setLoading] = useState(false)
-    const [image, setImage] = useState(null)
+    const [desktop_video, setdesktop_video] = useState(null)
+    const [mobile_video, setmobile_video] = useState(null)
     const initialValues = {
-        name: "",
-        image: "",
-        image_alt:"",
+        desktop_video: "",
+        mobile_video: "",
+
     }
-    
     const {
         values,
         errors,
@@ -25,38 +24,37 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: KeyHandoverAddSchema,
+        validationSchema: HomePageVideosSchema,
         onSubmit: async (values, { setSubmitting }) => {
             const formData = new FormData();
-            formData.append('name', values.name);
-            formData.append('image', image);
-            formData.append('image_alt', values.image_alt);
-              try {
-                setLoading(true)
-                const res = await AddKeyHandOverApi(formData)
-                const { StatusCode, message } = res.data;
-                if (StatusCode === 6001) {
-                  setModal(false)
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: `${message || "New Key Handover Added !"}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width: 600,
-                  })
-                  resetForm();
-                  fetchData();
-                } else if (StatusCode === 6002) {
-                  alert('Somthing went wrong')
-                }
-              } catch (error) {
-                console.log(error);
-                alert('Something wrong')
-              } finally {
-                setLoading(false)
-                setSubmitting(false);
+            formData.append('desktop_video', desktop_video);
+            formData.append('mobile_video', mobile_video);
+            try {
+              setLoading(true)
+              const res = await AddHomePageVideoApi(formData)
+              const { StatusCode , data} = res.data;
+              if (StatusCode===6001){
+                setModal(false)
+                fetchData()
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Video Added !',
+                  showConfirmButton: false,
+                  timer: 1500,
+                  width:600,
+                })
+                resetForm();
+              }else if (StatusCode === 6002){
+                alert('Somthing went wrong')
               }
+            } catch (error) {
+              console.log(error);
+              alert(error?.data?.mobile_video[0] || error?.data?.desktop_video[0] || 'Somthing went wrong')
+            } finally {
+              setLoading(false)
+              setSubmitting(false);
+            }
         },
     });
     return (
@@ -64,63 +62,50 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Key Handover</Heding>
+                    <Heding>Add Videos</Heding>
                     <Form onSubmit={handleSubmit}>
+
                         <Cover>
-                            <Label>Image ( 1080 x 1080)</Label>
+                            <Label>DeskTop Video</Label>
                             <div className='w-full'>
-                                {values.image && (
-                                    <img className='pb-3' src={URL.createObjectURL(image)} alt="Selected" />
-                                )}
+                               
                                 <Input
                                     type="file"
-                                    name={"image"}
+                                    name={"desktop_video"}
                                     onChange={(event) => {
                                         handleChange(event);
-                                        setImage(event.currentTarget.files[0]);
+                                        setdesktop_video(event.currentTarget.files[0]); 
                                     }}
                                     onBlur={handleBlur}
-                                    value={values.image}
-                                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                                    value={values.desktop_video}
+                                    accept=".mp4, .avi, .mov, .mkv, .wmv, .webm"
                                 />
-                                {touched.image && errors.image && (
-                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
+                                {touched.desktop_video && errors.desktop_video && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.desktop_video}</div>
                                 )}
                             </div>
                         </Cover>
                         <Cover>
-                            <Label>Image Alt Title</Label>
+                            <Label>Mobile Video</Label>
                             <div className='w-full'>
+                              
                                 <Input
-                                    placeholder='Enter the alt title'
-                                    type="text"
-                                    name={"image_alt"}
-                                    onChange={handleChange}
+                                    type="file"
+                                    name={"mobile_video"}
+                                    onChange={(event) => {
+                                        handleChange(event);
+                                        setmobile_video(event.currentTarget.files[0]); 
+                                    }}
                                     onBlur={handleBlur}
-                                    value={values.image_alt}
+                                    value={values.mobile_video}
+                                    accept=".mp4, .avi, .mov, .mkv, .wmv, .webm"
                                 />
-                                {touched.image_alt && errors.image_alt && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                                {touched.mobile_video && errors.mobile_video && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.mobile_video}</div>
                                 )}
                             </div>
                         </Cover>
-                        <Cover>
-                            <Label>Name</Label>
-                            <div className='w-full'>
-                                <Input
-                                    placeholder='Enter name'
-                                    type="text"
-                                    name={"name"}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.name}
-                                />
-                                {touched.name && errors.name && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
-                                )}
-                            </div>
-                        </Cover>
-                       {isLoading?(<ButtonLoading/>):( <SubmitBtn>
+                       {isLoading? (<ButtonLoading/>):( <SubmitBtn>
                             <button type='submit'>
                                 Submit
                             </button>
@@ -132,7 +117,7 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
     )
 }
 
-export default AddKeyHandOver
+export default AddHomePageVideos
 
 const Container = styled.div`
   position: fixed;
@@ -241,7 +226,17 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
-
+const TextArea = styled.textarea`
+  padding: 10px 20px;
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+`;
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;

@@ -7,7 +7,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import EditorToolbar, { modules, formats, } from "../../utils/EditorToolbar";
 import { DeleteBlogApi, EditBlogApi } from '../../../services/services';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function EditBlogs({isModal, setModal, fetchData, editData}) {
+  const [isLoading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const initialValues = {
         title: editData?.title || "",
@@ -41,6 +44,7 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
             formData.append('meta_description', values.meta_description);
             formData.append('slug', values.slug);
             try {
+              setLoading(true)
                 const res = await EditBlogApi(values.image?formData:values,editData.id)
                 const { StatusCode, message } = res.data;
                 if (StatusCode === 6000) {
@@ -56,12 +60,20 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
                     resetForm();
                     fetchData();
                 } else if (StatusCode === 6002) {
-                    alert('Somthing went wrong')
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `${(data && data.title && data.title[0]) || (data && data.slug && data.slug[0]) || "something wrong"}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    width: 600,
+                })
                 }
             } catch (error) {
                 console.log(error);
                 alert('Something wrong')
             } finally {
+              setLoading(false)
                 setSubmitting(false);
             }
         },
@@ -80,6 +92,7 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true)
           const res = await DeleteBlogApi( editData.id);
           const { StatusCode , message} = res.data;
           if (StatusCode === 6000) {
@@ -106,6 +119,8 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
         } catch (error) {
           console.log(error);
           alert('Something wrong');
+        } finally{
+          setLoading(false)
         }
       }
     });
@@ -138,6 +153,22 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
                     </div>
                 </Cover>
                 <Cover>
+                    <Label>Alt Tag</Label>
+                    <div className='w-full'>
+                        <Input
+                            placeholder='Enter a alt tag'
+                            type="text"
+                            name={"image_alt"}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.image_alt}
+                        />
+                        {touched.image_alt && errors.image_alt && (
+                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                        )}
+                    </div>
+                </Cover>
+                <Cover>
                     <Label>Title</Label>
                     <div className='w-full'>
                         <Input
@@ -161,7 +192,7 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
                             <ReactQuill
                                 theme="snow"
                                 name="body"
-                                onBlur={handleBlur}
+                                // onBlur={handleBlur}
                                 value={values.body}
                                 onChange={(content) => {
                                     setFieldValue("body", content);
@@ -173,24 +204,6 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
                         </TextEditor>
                         {touched.body && errors.body && (
                             <div className="text-red-500 text-sm pt-2 -mb-3">{errors.body}</div>
-                        )}
-                    </div>
-                </Cover>
-
-
-                <Cover>
-                    <Label>Alt Tag</Label>
-                    <div className='w-full'>
-                        <Input
-                            placeholder='Enter a alt tag'
-                            type="text"
-                            name={"image_alt"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.image_alt}
-                        />
-                        {touched.image_alt && errors.image_alt && (
-                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                         )}
                     </div>
                 </Cover>
@@ -243,14 +256,14 @@ function EditBlogs({isModal, setModal, fetchData, editData}) {
                     </div>
                 </Cover>
 
-                <SubmitBtn>
+               {isLoading?(<ButtonLoading/>):( <SubmitBtn>
                 <button onClick={()=>DeleteBlog()} className='delete' type='button'>
                         Delete
                     </button>
                     <button className='submit' type='submit'>
                         Update
                     </button>
-                </SubmitBtn>
+                </SubmitBtn>)}
             </Form>
         </div>
     </Modal>

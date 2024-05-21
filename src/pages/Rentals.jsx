@@ -10,6 +10,7 @@ import EditRentals from '../components/modal/rentals/EditRentals'
 import Swal from 'sweetalert2'
 
 function Rentals() {
+    const [isLoading, setLoading] = useState(false)
     const [data, setData] = useState(null)
     const [isModal,setModal] = useState(false)
     const [isEditModal,setEditModal] = useState(false)
@@ -44,6 +45,7 @@ function Rentals() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                   try {
+                    setLoading(true)
                     const res = await EditRentaleApi({ "is_hide": !values.is_hide }, values.id);
                     const { StatusCode , message} = res.data;
                     if (StatusCode === 6000) {
@@ -69,6 +71,8 @@ function Rentals() {
                   } catch (error) {
                     console.log(error);
                     alert('Something wrong');
+                  } finally{
+                    setLoading(false)
                   }
             }
         });
@@ -85,7 +89,7 @@ function Rentals() {
                 </Button>
             </div>
             <TableSection>
-                {data === null ? (
+                {data === null || isLoading? (
                     <Loader>
                         <Spinner className="h-6 w-6" />
                     </Loader>

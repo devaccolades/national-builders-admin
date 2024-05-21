@@ -10,6 +10,7 @@ import AddNearBy from '../../modal/Nearby/AddNearBy'
 import EditNearBy from '../../modal/Nearby/EditNearBy'
 
 function SpecificationAndNearBy({ projectId }) {
+  const [isLoading, setLoading] = useState(false)
   const [specifications, setSpecifications] = useState(null)
   const [distance, setDistance] = useState(null)
   const [isModal, setModal] = useState(false)
@@ -66,6 +67,7 @@ function SpecificationAndNearBy({ projectId }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true)
           const res = await DeleteProjectspecificationApi(data?.id)
           const { StatusCode, message } = res.data;
           if (StatusCode === 6000) {
@@ -83,6 +85,8 @@ function SpecificationAndNearBy({ projectId }) {
           }
         } catch (error) {
           console.error('Error:', error);
+        } finally{
+          setLoading(false)
         }
 
       }
@@ -102,6 +106,7 @@ function SpecificationAndNearBy({ projectId }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true)
           const res = await DeleteDistanceApi(data?.id)
           const { StatusCode, message } = res.data;
           if (StatusCode === 6000) {
@@ -119,6 +124,8 @@ function SpecificationAndNearBy({ projectId }) {
           }
         } catch (error) {
           console.error('Error:', error);
+        } finally{
+          setLoading(false)
         }
 
       }
@@ -133,7 +140,7 @@ function SpecificationAndNearBy({ projectId }) {
             <button onClick={() => setModal(true)}>Add Specifications</button>
           </Button>
         </div>
-        {specifications === null ? (
+        {specifications === null || isLoading? (
           <Loader>
             <Spinner className="h-6 w-6" />
           </Loader>

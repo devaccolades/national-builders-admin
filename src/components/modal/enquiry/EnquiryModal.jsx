@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 
-function EnquiryModal({ isModal, setModal, showData }) {
+function EnquiryModal({ isModal, setModal, showData ,is_rental}) {
   return (
     <Container className={isModal && "active"}>
     <Overlay onClick={() => setModal(false)}></Overlay>
     <Modal>
         <div>
-            <Heding>Enquiry Information</Heding>
+            <Heding>{is_rental&& "Rentals"} Enquiry Information</Heding>
             <Content className='rounded-[.5rem] p-6'>
             <div className='py-4 grid grid-cols-2'>
                 <p>Date</p>
@@ -15,7 +15,7 @@ function EnquiryModal({ isModal, setModal, showData }) {
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Name</p>
-                <p>{showData?.name}</p>
+                <p>{showData?.first_name} {showData?.last_name}</p>
             </div>
             <div className='py-4 grid grid-cols-2'>
                 <p>Email</p>
@@ -29,13 +29,16 @@ function EnquiryModal({ isModal, setModal, showData }) {
                 <p>Message</p>
                 <p>{showData?.message}</p>
             </div>
-            <div className='py-4 grid grid-cols-2'>
-                <p>Project</p>
-                <p>{showData?.project?.name}</p>
-            </div>
-
+            {is_rental?(<div className='py-4 grid grid-cols-2'>
+                <p>Rentals</p>
+                <p>{showData?.rentals?.name}</p>
+            </div>):(
+              <div className='py-4 grid grid-cols-2'>
+              <p>Project</p>
+              <p>{showData?.project?.name || "Not Provided"}</p>
+          </div>
+            )}
             </Content>
-            
         </div>
     </Modal>
   </Container>

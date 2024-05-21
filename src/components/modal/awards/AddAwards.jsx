@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { KeyHandoverAddSchema } from '../../../Validations/Validations';
+import { HomePageAwardsSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
-import { AddKeyHandOverApi } from '../../../services/services';
+import { AddAwardsImageApi } from '../../../services/services';
 import ButtonLoading from '../../common/ButtonLoading';
 
-function AddKeyHandOver({isModal, setModal,fetchData}) {
-  const [isLoading, setLoading] = useState(false)
-    const [image, setImage] = useState(null)
+function AddAwards({ isModal, setModal, fetData }) {
+    const [isLoading, setLoading] = useState(false)
+    const [images, setImages] = useState(null)
     const initialValues = {
-        name: "",
-        image: "",
-        image_alt:"",
+        image_alt: "",
+        images: "",
     }
-    
     const {
         values,
         errors,
@@ -25,38 +23,38 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
         handleChange,
     } = useFormik({
         initialValues: initialValues,
-        validationSchema: KeyHandoverAddSchema,
+        validationSchema: HomePageAwardsSchema,
         onSubmit: async (values, { setSubmitting }) => {
             const formData = new FormData();
-            formData.append('name', values.name);
-            formData.append('image', image);
             formData.append('image_alt', values.image_alt);
-              try {
+            formData.append('images', images);
+            try {
                 setLoading(true)
-                const res = await AddKeyHandOverApi(formData)
+                const res = await AddAwardsImageApi(formData)
                 const { StatusCode, message } = res.data;
                 if (StatusCode === 6001) {
-                  setModal(false)
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: `${message || "New Key Handover Added !"}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width: 600,
-                  })
-                  resetForm();
-                  fetchData();
+                    setModal(false)
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: `${message || "Image Added !"}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        width: 600,
+                    })
+                    fetData()
+                    resetForm()
                 } else if (StatusCode === 6002) {
-                  alert('Somthing went wrong')
+                    alert('Somthing went wrong')
                 }
-              } catch (error) {
+
+            } catch (error) {
                 console.log(error);
                 alert('Something wrong')
-              } finally {
+            } finally {
                 setLoading(false)
                 setSubmitting(false);
-              }
+            }
         },
     });
     return (
@@ -64,32 +62,10 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
             <Overlay onClick={() => setModal(false)}></Overlay>
             <Modal>
                 <div>
-                    <Heding>Add Key Handover</Heding>
+                    <Heding>Add Awards</Heding>
                     <Form onSubmit={handleSubmit}>
                         <Cover>
-                            <Label>Image ( 1080 x 1080)</Label>
-                            <div className='w-full'>
-                                {values.image && (
-                                    <img className='pb-3' src={URL.createObjectURL(image)} alt="Selected" />
-                                )}
-                                <Input
-                                    type="file"
-                                    name={"image"}
-                                    onChange={(event) => {
-                                        handleChange(event);
-                                        setImage(event.currentTarget.files[0]);
-                                    }}
-                                    onBlur={handleBlur}
-                                    value={values.image}
-                                    accept="image/png, image/jpeg, image/jpg, image/webp"
-                                />
-                                {touched.image && errors.image && (
-                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
-                                )}
-                            </div>
-                        </Cover>
-                        <Cover>
-                            <Label>Image Alt Title</Label>
+                            <Label>Alt Tag</Label>
                             <div className='w-full'>
                                 <Input
                                     placeholder='Enter the alt title'
@@ -105,22 +81,28 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
                             </div>
                         </Cover>
                         <Cover>
-                            <Label>Name</Label>
+                            <Label>Image</Label>
                             <div className='w-full'>
+                                {values.images && (
+                                    <img className='pb-3 ' src={URL.createObjectURL(images)} alt="Selected" />
+                                )}
                                 <Input
-                                    placeholder='Enter name'
-                                    type="text"
-                                    name={"name"}
-                                    onChange={handleChange}
+                                    type="file"
+                                    name={"images"}
+                                    onChange={(event) => {
+                                        handleChange(event);
+                                        setImages(event.currentTarget.files[0]);
+                                    }}
                                     onBlur={handleBlur}
-                                    value={values.name}
+                                    value={values.images}
+                                    accept="images/*"
                                 />
-                                {touched.name && errors.name && (
-                                    <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
+                                {touched.images && errors.images && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.images}</div>
                                 )}
                             </div>
                         </Cover>
-                       {isLoading?(<ButtonLoading/>):( <SubmitBtn>
+                        {isLoading ? (<ButtonLoading />) : (<SubmitBtn>
                             <button type='submit'>
                                 Submit
                             </button>
@@ -132,7 +114,8 @@ function AddKeyHandOver({isModal, setModal,fetchData}) {
     )
 }
 
-export default AddKeyHandOver
+
+export default AddAwards
 
 const Container = styled.div`
   position: fixed;

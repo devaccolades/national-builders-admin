@@ -4,7 +4,10 @@ import { useFormik } from 'formik';
 import { SeoAddSchema } from '../../../Validations/Validations';
 import { DeleteSeoApi, EditSeoApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function EditSeo({isModal,setModal,fetchData,editData}) {
+  const [isLoading, setLoading] = useState(false)
     const initialValues = {
         page: editData?.page || "",
         path: editData?.path || "",
@@ -24,6 +27,7 @@ function EditSeo({isModal,setModal,fetchData,editData}) {
         validationSchema: SeoAddSchema,
         onSubmit: async (values, { setSubmitting }) => {
           try {
+            setLoading(true)
             const res = await EditSeoApi(values,editData.id)
             const { StatusCode , data} = res.data;
             if (StatusCode===6000){
@@ -45,6 +49,7 @@ function EditSeo({isModal,setModal,fetchData,editData}) {
             console.log(error);
             alert('Somthing went wrong')
           } finally {
+            setLoading(false)
             setSubmitting(false);
           }
         },
@@ -62,6 +67,7 @@ function EditSeo({isModal,setModal,fetchData,editData}) {
           }).then(async (result) => {
             if (result.isConfirmed) {
               try {
+                setLoading(true)
                 const res = await DeleteSeoApi( editData.id);
                 const { StatusCode , message} = res.data;
                 if (StatusCode === 6000) {
@@ -88,6 +94,8 @@ function EditSeo({isModal,setModal,fetchData,editData}) {
               } catch (error) {
                 console.log(error);
                 alert('Something wrong');
+              } finally{
+                setLoading(false)
               }
             }
           });
@@ -161,14 +169,14 @@ function EditSeo({isModal,setModal,fetchData,editData}) {
                 )}
               </div>
             </Cover>
-            <SubmitBtn>
+           {isLoading?(<ButtonLoading/>):(<SubmitBtn>
               <button onClick={()=>DeleteSeo()} className='delete' type='button'>
                 Delete
               </button>
               <button className='submit' type='submit'>
-                Submit
+                Update
               </button>
-            </SubmitBtn>
+            </SubmitBtn>)}
           </Form>
         </div>
       </Modal>

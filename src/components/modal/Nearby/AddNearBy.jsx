@@ -4,7 +4,9 @@ import { useFormik } from 'formik';
 import { NearByAddSchema } from '../../../Validations/Validations';
 import { AddProjectDistanceApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
 function AddNearBy({ isModal, setModal, fetchData, projectId }) {
+  const [isLoading, setLoading] = useState(false)
   const initialValues = {
     project: projectId || "",
     location_name: "",
@@ -24,6 +26,7 @@ function AddNearBy({ isModal, setModal, fetchData, projectId }) {
     validationSchema: NearByAddSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
+        setLoading(true)
         const res = await AddProjectDistanceApi(values)
         const { StatusCode, data } = res.data;
         if (StatusCode === 6001) {
@@ -45,6 +48,7 @@ function AddNearBy({ isModal, setModal, fetchData, projectId }) {
         console.log(error);
         alert('Somthing went wrong', error)
       } finally {
+        setLoading(false)
         setSubmitting(false);
       }
     },
@@ -105,14 +109,14 @@ function AddNearBy({ isModal, setModal, fetchData, projectId }) {
                 </div>
               </div>
             </Cover>
-            <SubmitBtn>
+            {isLoading ? (<ButtonLoading/>):(<SubmitBtn>
               <button onClick={() => setModal(false)} className='cancel' type='button'>
                 Cancel
               </button>
               <button className='submit' type='submit'>
                 Submit
               </button>
-            </SubmitBtn>
+            </SubmitBtn>)}
           </Form>
         </div>
       </Modal>

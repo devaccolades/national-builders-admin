@@ -1,18 +1,17 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { SeoAddSchema } from '../../../Validations/Validations';
-import { AddSeoApi } from '../../../services/services';
+import { ProjectImageEditSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
+import { EditProjectImagesApi } from '../../../services/services';
 import ButtonLoading from '../../common/ButtonLoading';
 
-function AddSeo({isModal, setModal, fetchData}) {
+function EditProjectImages({ isModal, setModal,editImgData,fetData }) {
   const [isLoading, setLoading] = useState(false)
+  const [image, setImage] = useState(null)
   const initialValues = {
-    page: "",
-    path: "",
-    meta_title: "",
-    meta_description: "",
+    images: "",
+    image_alt: editImgData?.image_alt || ""
   }
   const {
     values,
@@ -24,30 +23,34 @@ function AddSeo({isModal, setModal, fetchData}) {
     handleChange,
   } = useFormik({
     initialValues: initialValues,
-    validationSchema: SeoAddSchema,
+    validationSchema: ProjectImageEditSchema,
     onSubmit: async (values, { setSubmitting }) => {
+      const formData = new FormData();
+      formData.append('images', image);
+      formData.append('image_alt', values.image_alt);
       try {
         setLoading(true)
-        const res = await AddSeoApi(values)
-        const { StatusCode , data} = res.data;
-        if (StatusCode===6001){
+        const res = await EditProjectImagesApi(values.images?formData:values,editImgData.id)
+        const { StatusCode, message } = res.data;
+        if (StatusCode === 6000) {
           setModal(false)
-          fetchData()
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'New Seo Added !',
+            title: `${message || "Image Updated !"}`,
             showConfirmButton: false,
             timer: 1500,
-            width:600,
+            width: 600,
           })
-          resetForm();
-        }else if (StatusCode === 6002){
+          fetData()
+          resetForm()
+        } else if (StatusCode === 6002) {
           alert('Somthing went wrong')
         }
+
       } catch (error) {
         console.log(error);
-        alert('Somthing went wrong')
+        alert('Something wrong')
       } finally {
         setLoading(false)
         setSubmitting(false);
@@ -59,73 +62,47 @@ function AddSeo({isModal, setModal, fetchData}) {
       <Overlay onClick={() => setModal(false)}></Overlay>
       <Modal>
         <div>
-          <Heding>Add Seo</Heding>
+          <Heding>Edit Images</Heding>
           <Form onSubmit={handleSubmit}>
             <Cover>
-              <Label>Path</Label>
+              <Label>Image (1080 x 680)</Label>
+              <div className='w-full'>
+                  <img className='pb-3 ' src={values.images?URL.createObjectURL(image):editImgData?.images} alt="Selected" />
+                <Input
+                  type="file"
+                  name={"images"}
+                  onChange={(event) => {
+                    handleChange(event);
+                    setImage(event.currentTarget.files[0]);
+                  }}
+                  onBlur={handleBlur}
+                  value={values.images}
+                  accept="logo/*"
+                />
+                {touched.images && errors.images && (
+                  <div className="text-red-500 text-sm pt-1 -mb-3">{errors.images}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Image Alt Title</Label>
               <div className='w-full'>
                 <Input
-                placeholder='Please enter the path'
+                  placeholder='Enter Logo Alt Title'
                   type="text"
-                  name={"path"}
+                  name={"image_alt"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.path}
+                  value={values.image_alt}
                 />
-                {touched.path && errors.path && (
-                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.path}</div>
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                 )}
               </div>
             </Cover>
-            <Cover>
-              <Label>Page</Label>
-              <div className='w-full'>
-                <Input
-                placeholder='Please enter the page'
-                  type="text"
-                  name={"page"}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.page}
-                />
-                {touched.page && errors.page && (
-                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.page}</div>
-                )}
-              </div>
-            </Cover>
-            <Cover>
-              <Label>Meta Title</Label>
-              <div className='w-full'>
-                <TextArea
-                placeholder='Please enter the meta title'
-                  name={"meta_title"}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.meta_title}
-                ></TextArea>
-                {touched.meta_title && errors.meta_title && (
-                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_title}</div>
-                )}
-              </div>
-            </Cover>
-            <Cover>
-              <Label>Meta Description</Label>
-              <div className='w-full'>
-                <TextArea
-                placeholder='Please enter the meta description'
-                  name={"meta_description"}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.meta_description}
-                ></TextArea>
-                {touched.meta_description && errors.meta_description && (
-                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_description}</div>
-                )}
-              </div>
-            </Cover>
-            {isLoading?(<ButtonLoading/>):(<SubmitBtn>
+           {isLoading ? (<ButtonLoading/>):( <SubmitBtn>
               <button type='submit'>
-                Submit
+                Update
               </button>
             </SubmitBtn>)}
           </Form>
@@ -135,7 +112,7 @@ function AddSeo({isModal, setModal, fetchData}) {
   )
 }
 
-export default AddSeo
+export default EditProjectImages
 
 const Container = styled.div`
   position: fixed;
@@ -244,17 +221,7 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
-const TextArea = styled.textarea`
-  padding: 10px 20px;
-  width: 100%;
-  height: 120px;
-  border-radius: 6px;
-  box-sizing: border-box;
-  background-color: #5b5b5b;
-  border: none;
-  outline: none;
-  color: #fff;
-`;
+
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;
@@ -263,7 +230,7 @@ const SubmitBtn = styled.div`
     font-size: 16px;
     text-align: center;
     background-color: var(--lightblue);
-    color: black;
+    color: white;
     border-radius: 10px;
  }
 `

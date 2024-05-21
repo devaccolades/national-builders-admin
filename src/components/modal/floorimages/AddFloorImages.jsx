@@ -4,12 +4,15 @@ import styled from 'styled-components';
 import { FloorImageAddSchema } from '../../../Validations/Validations';
 import { AddFloorPlanImagesApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
 
 function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
+  const [isLoading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const initialValues = {
         title: "",
         images: "",
+        image_alt:"",
     }
     const {
         values,
@@ -27,7 +30,9 @@ function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
             formData.append('project', projectId);
             formData.append('images', image);
             formData.append('title', values.title);
+            formData.append('image_alt', values.image_alt);
             try {
+              setLoading(true)
                 const res = await AddFloorPlanImagesApi(formData)
                 const { StatusCode, data } = res.data;
                 if (StatusCode === 6001) {
@@ -48,6 +53,7 @@ function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
             } catch (error) {
                 console.log(error);
             } finally {
+              setLoading(false)
                 setSubmitting(false);
             }
         },
@@ -82,6 +88,21 @@ function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
                             </div>
                         </Cover>
                         <Cover>
+                            <Label>Image Alt Title</Label>
+                            <div className='w-full'>
+                                <Input
+                                    type="text"
+                                    name={"image_alt"}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.image_alt}
+                                />
+                                {touched.image_alt && errors.image_alt && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image_alt}</div>
+                                )}
+                            </div>
+                        </Cover>
+                        <Cover>
                             <Label>Title</Label>
                             <div className='w-full'>
                                 <Input
@@ -96,11 +117,11 @@ function AddFloorImages({ isModal, setModal,projectId,fetDataFloorImages }) {
                                 )}
                             </div>
                         </Cover>
-                        <SubmitBtn>
+                        {isLoading? (<ButtonLoading/>): (<SubmitBtn>
                             <button type='submit'>
                                 Submit
                             </button>
-                        </SubmitBtn>
+                        </SubmitBtn>)}
                     </Form>
                 </div>
             </Modal>

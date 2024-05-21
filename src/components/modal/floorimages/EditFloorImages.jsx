@@ -4,12 +4,15 @@ import styled from 'styled-components';
 import { FloorImageEditSchema } from '../../../Validations/Validations';
 import { EditFloorPlanImagesApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
 
 function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
     const [image, setImage] = useState(null)
+    const [isLoading, setLoading] = useState(false)
     const initialValues = {
         title: editData?.title || "",
         images: '',
+        image_alt: editData?.image_alt || '',
     }
     const {
         values,
@@ -26,7 +29,9 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
             const formData = new FormData();
             formData.append('images', image);
             formData.append('title', values.title);
+            formData.append('image_alt', values.image_alt);
             try {
+              setLoading(true)
                 const res = await EditFloorPlanImagesApi(values.images?formData:values,editData.id)
                 const { StatusCode, data } = res.data;
                 if (StatusCode === 6000) {
@@ -47,6 +52,7 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
             } catch (error) {
                 console.log(error);
             } finally {
+              setLoading(false)
                 setSubmitting(false);
             }
         },
@@ -81,6 +87,21 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
                     </div>
                 </Cover>
                 <Cover>
+                            <Label>Image Alt Title</Label>
+                            <div className='w-full'>
+                                <Input
+                                    type="text"
+                                    name={"image_alt"}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.image_alt}
+                                />
+                                {touched.image_alt && errors.image_alt && (
+                                    <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image_alt}</div>
+                                )}
+                            </div>
+                        </Cover>
+                <Cover>
                     <Label>Title</Label>
                     <div className='w-full'>
                         <Input
@@ -95,11 +116,11 @@ function EditFloorImages({ isModal, setModal, editData ,fetDataFloorImages}) {
                         )}
                     </div>
                 </Cover>
-                <SubmitBtn>
+                {isLoading ? (<ButtonLoading/>):(<SubmitBtn>
                     <button type='submit'>
                         Update
                     </button>
-                </SubmitBtn>
+                </SubmitBtn>)}
             </Form>
         </div>
     </Modal>

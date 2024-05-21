@@ -6,8 +6,10 @@ import { UpdateAmenitiesApi, getAllAmenitiesApi, getProjectAmenitiesApi } from '
 import { Spinner } from '@material-tailwind/react'
 import NoDataFound from '../../common/NoDataFound'
 import Swal from 'sweetalert2'
+import ButtonLoading from '../../common/ButtonLoading'
 
 function AmenitiesList({ projectId }) {
+  const [isLoading, setLoading] = useState(false)
   const [isModal, setModal] = useState(false)
   const [selectAmenities, setSelectAmenities] = useState(null)
   const [amenitiesList, setAmenitiesList] = useState(null)
@@ -63,6 +65,7 @@ function AmenitiesList({ projectId }) {
       Swal.fire('Please Select At Least One Amenity.');
     } else {
       try {
+        setLoading(true)
         const res = await UpdateAmenitiesApi(selectAmenities, projectId)
         const { StatusCode, message, data } = res.data;
         if (StatusCode === 6000) {
@@ -77,7 +80,9 @@ function AmenitiesList({ projectId }) {
           })
         }
       } catch (error) {
-
+console.log(error);
+      } finally{
+        setLoading(false)
       }
     }
   }
@@ -114,10 +119,13 @@ function AmenitiesList({ projectId }) {
           </div>
         )}
         <div className='flex justify-end items-center w-[90%] mx-auto'>
-          <button className='update p-4 mt-5' onClick={UpdateAmenities}>Update</button>
+         {isLoading ? (
+          <div className='mt-5'>
+            <ButtonLoading/>
+          </div>
+         ):( <button className='update p-4 mt-5' onClick={UpdateAmenities}>Update</button>)}
         </div>
       </AmenitiesLising>
-
       <AddAmenities isModal={isModal} setModal={setModal} />
     </Section>
   )

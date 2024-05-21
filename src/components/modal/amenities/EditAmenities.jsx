@@ -4,12 +4,16 @@ import { useFormik } from 'formik';
 import { AmenitiesEditSchema } from '../../../Validations/Validations';
 import {  DeleteAmenitieschApi, EditAmenitieschApi } from '../../../services/services';
 import Swal from 'sweetalert2';
+import ButtonLoading from '../../common/ButtonLoading';
 
 function EditAmenities({ isModal, setModal, editdData }) {
+  const [isLoading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
   const initialValues = {
     title: editdData.title || "",
     logo: '',
+    image_alt: editdData?.image_alt || ""
+
   }
   const {
     values,
@@ -25,10 +29,12 @@ function EditAmenities({ isModal, setModal, editdData }) {
       event.preventDefault();
       const formData = new FormData();
       formData.append('title', values.title);
+      formData.append('image_alt', values.image_alt);
       if (image){
         formData.append('logo', image);
       }
       try {
+        setLoading(true)
         const res = await EditAmenitieschApi(formData, editdData.id)
         const { StatusCode , data} = res.data;
         if (StatusCode === 6000) {
@@ -36,7 +42,7 @@ function EditAmenities({ isModal, setModal, editdData }) {
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'Branch Edited !',
+            title: 'Aminity Edited !',
             showConfirmButton: false,
             timer: 1500,
             width: 600,
@@ -56,6 +62,7 @@ function EditAmenities({ isModal, setModal, editdData }) {
         console.log(error);
         alert('Something wrong')
       } finally {
+        setLoading(false)
         setSubmitting(false);
       }
 
@@ -76,6 +83,7 @@ function EditAmenities({ isModal, setModal, editdData }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setLoading(true)
           const res = await DeleteAmenitieschApi( editdData.id);
           const { StatusCode , message} = res.data;
           if (StatusCode === 6000) {
@@ -101,6 +109,8 @@ function EditAmenities({ isModal, setModal, editdData }) {
         } catch (error) {
           console.log(error);
           alert('Something wrong');
+        } finally{
+          setLoading(false)
         }
       }
     });
@@ -148,14 +158,30 @@ function EditAmenities({ isModal, setModal, editdData }) {
               )}
             </div>
           </Cover>
-          <SubmitBtn>
+          <Cover>
+              <Label>Logo Alt Title</Label>
+              <div className='w-full'>
+                <Input
+                  placeholder='Enter Logo Alt Title'
+                  type="text"
+                  name={"image_alt"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.image_alt}
+                />
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                )}
+              </div>
+            </Cover>
+          {isLoading? (<ButtonLoading/>):(<SubmitBtn>
             <button type='button' className='delete' onClick={DeleteBranch}>
               Delete
             </button>
             <button type='submit' className='submit'>
               Submit
             </button>
-          </SubmitBtn>
+          </SubmitBtn>)}
         </Form>
       </div>
     </Modal>

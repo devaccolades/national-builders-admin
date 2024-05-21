@@ -7,7 +7,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import EditorToolbar, { modules, formats, } from "../../utils/EditorToolbar";
 import { DeleteNewsAndEventApi, EditNewsAndEventApi } from '../../../services/services';
+import ButtonLoading from '../../common/ButtonLoading';
+
 function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
+  const [isLoading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const initialValues = {
         title: editData?.title || "",
@@ -42,6 +45,7 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
             formData.append('meta_description', values.meta_description);
             formData.append('slug', values.slug);
             try {
+              setLoading(true)
                 const res = await EditNewsAndEventApi(values.image ? formData : values,editData.id)
                 const { StatusCode, message } = res.data;
                 if (StatusCode === 6000) {
@@ -57,12 +61,20 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
                     resetForm();
                     fetchData();
                 } else if (StatusCode === 6002) {
-                    alert('Somthing went wrong')
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: `${(data && data.title && data.title[0]) || (data && data.slug && data.slug[0]) || "something wrong"}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    width: 600,
+                })
                 }
             } catch (error) {
                 console.log(error);
                 alert('Something wrong')
             } finally {
+              setLoading(false)
                 setSubmitting(false);
             }
         },
@@ -80,6 +92,7 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
+              setLoading(true)
               const res = await DeleteNewsAndEventApi( editData.id);
               const { StatusCode , message} = res.data;
               if (StatusCode === 6000) {
@@ -106,6 +119,8 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
             } catch (error) {
               console.log(error);
               alert('Something wrong');
+            } finally{
+              setLoading(false)
             }
           }
         });
@@ -138,6 +153,22 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
                     </div>
                 </Cover>
                 <Cover>
+                    <Label>Alt Tag</Label>
+                    <div className='w-full'>
+                        <Input
+                            placeholder='Enter a alt tag'
+                            type="text"
+                            name={"image_alt"}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.image_alt}
+                        />
+                        {touched.image_alt && errors.image_alt && (
+                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
+                        )}
+                    </div>
+                </Cover>
+                <Cover>
                     <Label>Title</Label>
                     <div className='w-full'>
                         <Input
@@ -161,7 +192,7 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
                             <ReactQuill
                                 theme="snow"
                                 name="body"
-                                onBlur={handleBlur}
+                                // onBlur={handleBlur}
                                 value={values.body}
                                 onChange={(content) => {
                                     setFieldValue("body", content);
@@ -190,22 +221,6 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
                         />
                         {touched.youtube_link && errors.youtube_link && (
                             <div className="text-red-500 text-sm pt-2 -mb-3">{errors.youtube_link}</div>
-                        )}
-                    </div>
-                </Cover>
-                <Cover>
-                    <Label>Alt Tag</Label>
-                    <div className='w-full'>
-                        <Input
-                            placeholder='Enter a alt tag'
-                            type="text"
-                            name={"image_alt"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.image_alt}
-                        />
-                        {touched.image_alt && errors.image_alt && (
-                            <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                         )}
                     </div>
                 </Cover>
@@ -258,14 +273,14 @@ function EditNewsAndEvents({ isModal, setModal, fetchData, editData }) {
                     </div>
                 </Cover>
 
-                <SubmitBtn>
+               {isLoading? (<ButtonLoading/>):( <SubmitBtn>
                 <button onClick={()=>DeleteNewsAndEvent()} className='delete' type='button'>
                         Delete
                     </button>
                     <button className='submit' type='submit'>
                         Update
                     </button>
-                </SubmitBtn>
+                </SubmitBtn>)}
             </Form>
         </div>
     </Modal>

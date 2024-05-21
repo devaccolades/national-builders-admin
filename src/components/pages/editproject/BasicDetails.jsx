@@ -6,9 +6,11 @@ import { EditProjectApi, getBranchDropDownApi } from '../../../services/services
 import { Spinner } from '@material-tailwind/react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import ButtonLoading from '../../common/ButtonLoading';
 
 function BasicDetails({ datas, slug }) {
     const navigate = useNavigate()
+    const [isLoading, setLoading] = useState(false)
     const [branchDropDown, setBranchDropDown] = useState(null)
     const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "" })
 
@@ -39,6 +41,8 @@ function BasicDetails({ datas, slug }) {
         area_to: datas.area_to || "",
         qr_code: '',
         thumbnail: '',
+        thumbnail_alt: datas?.thumbnail_alt || "",
+        qr_code_alt: datas?.qr_code_alt || "",
         slug: datas.slug || "",
         status: datas.status || "",
         iframe: datas.iframe || "",
@@ -66,6 +70,7 @@ function BasicDetails({ datas, slug }) {
             formData.append('qr_code', projectImages.qr_code);
             formData.append('thumbnail', projectImages.thumbnail);
             try {
+                setLoading(true)
                 const res = await EditProjectApi(projectImages.qr_code || projectImages.thumbnail ? formData : values, datas?.slug)
                 const { StatusCode, message, data } = res.data;
                 if (StatusCode === 6000) {
@@ -96,6 +101,7 @@ function BasicDetails({ datas, slug }) {
                 console.log(error);
                 alert('Something wrong')
             } finally {
+                setLoading(false)
                 setSubmitting(false);
             }
         },
@@ -231,7 +237,7 @@ function BasicDetails({ datas, slug }) {
                         <div>
                             {datas.qr_code && <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />}
                             <Input
-                            accept=".png, .jpeg, .jpg, .webp"
+                                accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 onChange={(e) => {
                                     handleChange(e);
@@ -247,11 +253,27 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
+                        <Label>Qr Alt Tag</Label>
+                        <div>
+                            <Input
+                                type="text"
+                                placeholder="Enter The Qr Alt Tag"
+                                name={"qr_code_alt"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.qr_code_alt}
+                            />
+                            {touched.qr_code_alt && errors.qr_code_alt && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.qr_code_alt}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
                         <Label>Project Thumbnail</Label>
                         <div>
                             {datas.thumbnail && <img className='pb-3' src={projectImages.thumbnail ? URL.createObjectURL(projectImages.thumbnail) : datas.thumbnail} alt="rara qr code" />}
                             <Input
-                            accept=".png, .jpeg, .jpg, .webp"
+                                accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 name={"thumbnail"}
                                 onChange={(e) => {
@@ -263,6 +285,22 @@ function BasicDetails({ datas, slug }) {
                             />
                             {touched.thumbnail && errors.thumbnail && (
                                 <div className="text-red-500 text-sm pt-2 -mb-3">{errors.thumbnail}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
+                        <Label>Thumbnail Alt Tag</Label>
+                        <div>
+                            <Input
+                                type="text"
+                                placeholder="Enter The Thumbnail Alt Tag"
+                                name={"thumbnail_alt"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.thumbnail_alt}
+                            />
+                            {touched.thumbnail_alt && errors.thumbnail_alt && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.thumbnail_alt}</div>
                             )}
                         </div>
                     </Cover>
@@ -412,10 +450,17 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
-                        <SubmitButton>
-                        <button type='button' onClick={()=>navigate('/project')} className='cancel'>Cancel</button>
-                            <button type='submit' className='submit'>Update</button>
-                        </SubmitButton>
+                        {isLoading ? (
+                            <div className='pt-3 pb-5'>
+                                <ButtonLoading/>
+                            </div>
+                        ) : (
+                            <SubmitButton>
+                                <button type='button' onClick={() => navigate('/project')} className='cancel'>Cancel</button>
+                                <button type='submit' className='submit'>Update</button>
+                            </SubmitButton>
+                        )}
+
                     </Cover>
 
                 </Form>

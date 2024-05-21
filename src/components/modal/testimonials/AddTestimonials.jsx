@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { useFormik } from 'formik';
-import { SeoAddSchema } from '../../../Validations/Validations';
-import { AddSeoApi } from '../../../services/services';
+import { TestimonialsAddSchema } from '../../../Validations/Validations';
 import Swal from 'sweetalert2';
+import { AddTestimonialsApi } from '../../../services/services';
 import ButtonLoading from '../../common/ButtonLoading';
 
-function AddSeo({isModal, setModal, fetchData}) {
+function AddTestimonials({ isModal, setModal, fetchData, projecDropDowntData }) {
   const [isLoading, setLoading] = useState(false)
+  const [image, setImage] = useState(null)
   const initialValues = {
-    page: "",
-    path: "",
-    meta_title: "",
-    meta_description: "",
+    name: "",
+    image: "",
+    project: "",
+    description: "",
+    image_alt:""
   }
   const {
     values,
@@ -24,106 +26,138 @@ function AddSeo({isModal, setModal, fetchData}) {
     handleChange,
   } = useFormik({
     initialValues: initialValues,
-    validationSchema: SeoAddSchema,
+    validationSchema: TestimonialsAddSchema,
     onSubmit: async (values, { setSubmitting }) => {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('image', image);
+      formData.append('project', values.project);
+      formData.append('description', values.description);
+      formData.append('image_alt', values.image_alt);
       try {
         setLoading(true)
-        const res = await AddSeoApi(values)
-        const { StatusCode , data} = res.data;
-        if (StatusCode===6001){
+        const res = await AddTestimonialsApi(formData)
+        const { StatusCode, message } = res.data;
+        if (StatusCode === 6001) {
           setModal(false)
-          fetchData()
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'New Seo Added !',
+            title: `${message || "New Testimonials Added !"}`,
             showConfirmButton: false,
             timer: 1500,
-            width:600,
+            width: 600,
           })
           resetForm();
-        }else if (StatusCode === 6002){
+          fetchData();
+        } else if (StatusCode === 6002) {
           alert('Somthing went wrong')
         }
       } catch (error) {
         console.log(error);
-        alert('Somthing went wrong')
+        alert('Something wrong')
       } finally {
         setLoading(false)
         setSubmitting(false);
       }
     },
   });
+
   return (
     <Container className={isModal && "active"}>
       <Overlay onClick={() => setModal(false)}></Overlay>
       <Modal>
         <div>
-          <Heding>Add Seo</Heding>
+          <Heding>Add Testimonials</Heding>
           <Form onSubmit={handleSubmit}>
             <Cover>
-              <Label>Path</Label>
+              <Label>Name</Label>
               <div className='w-full'>
                 <Input
-                placeholder='Please enter the path'
+                  placeholder='Enter name'
                   type="text"
-                  name={"path"}
+                  name={"name"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.path}
+                  value={values.name}
                 />
-                {touched.path && errors.path && (
-                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.path}</div>
+                {touched.name && errors.name && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.name}</div>
                 )}
               </div>
             </Cover>
             <Cover>
-              <Label>Page</Label>
+              <Label>Image ( 1080 x 1080)</Label>
+              <div className='w-full'>
+                {values.image && (
+                  <img className='pb-3' src={URL.createObjectURL(image)} alt="Selected" />
+                )}
+                <Input
+                  type="file"
+                  name={"image"}
+                  onChange={(event) => {
+                    handleChange(event);
+                    setImage(event.currentTarget.files[0]);
+                  }}
+                  onBlur={handleBlur}
+                  value={values.image}
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                />
+                {touched.image && errors.image && (
+                  <div className="text-red-500 text-sm pt-1 -mb-3">{errors.image}</div>
+                )}
+              </div>
+            </Cover>
+            <Cover>
+              <Label>Image Alt Title</Label>
               <div className='w-full'>
                 <Input
-                placeholder='Please enter the page'
+                  placeholder='Image alt title'
                   type="text"
-                  name={"page"}
+                  name={"image_alt"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.page}
+                  value={values.image_alt}
                 />
-                {touched.page && errors.page && (
-                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.page}</div>
+                {touched.image_alt && errors.image_alt && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.image_alt}</div>
                 )}
               </div>
             </Cover>
             <Cover>
-              <Label>Meta Title</Label>
+              <Label>Select Project</Label>
               <div className='w-full'>
-                <TextArea
-                placeholder='Please enter the meta title'
-                  name={"meta_title"}
+                <Select name='project'
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.meta_title}
-                ></TextArea>
-                {touched.meta_title && errors.meta_title && (
-                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_title}</div>
+                  value={values.project}>
+                  <Option value='' disabled>Please select a project</Option>
+                  {projecDropDowntData.map((project, index) => (
+                    <Option value={project.id}>{project?.name}</Option>
+                  ))}
+                </Select>
+                {touched.project && errors.project && (
+                  <div className="text-red-500 text-sm pt-2 -mb-3">{errors.project}</div>
                 )}
               </div>
             </Cover>
             <Cover>
-              <Label>Meta Description</Label>
+              <Label>Enter Description</Label>
               <div className='w-full'>
                 <TextArea
-                placeholder='Please enter the meta description'
-                  name={"meta_description"}
+                  placeholder='Enter Description'
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.meta_description}
-                ></TextArea>
-                {touched.meta_description && errors.meta_description && (
-                  <div className="text-red-500 text-sm  -mb-3">{errors.meta_description}</div>
+                  value={values.description}
+                  name={"description"}
+                >
+                </TextArea>
+                {touched.description && errors.description && (
+                  <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
                 )}
               </div>
             </Cover>
-            {isLoading?(<ButtonLoading/>):(<SubmitBtn>
+            {isLoading ? (<ButtonLoading />) : (<SubmitBtn>
               <button type='submit'>
                 Submit
               </button>
@@ -135,7 +169,7 @@ function AddSeo({isModal, setModal, fetchData}) {
   )
 }
 
-export default AddSeo
+export default AddTestimonials
 
 const Container = styled.div`
   position: fixed;
@@ -244,6 +278,26 @@ const Input = styled.input`
   outline: none;
   color: #fff;
 `;
+
+const Select = styled.select`
+  padding: 10px 20px;
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #5b5b5b;
+  border: none;
+  outline: none;
+  color: #fff;
+  /* text-transform: capitalize; */
+
+`;
+
+const Option = styled.option`
+    /* text-transform: capitalize; */
+
+`;
+
 const TextArea = styled.textarea`
   padding: 10px 20px;
   width: 100%;
@@ -255,6 +309,7 @@ const TextArea = styled.textarea`
   outline: none;
   color: #fff;
 `;
+
 const SubmitBtn = styled.div`
   display: flex;
   justify-content: end;
@@ -267,3 +322,4 @@ const SubmitBtn = styled.div`
     border-radius: 10px;
  }
 `
+

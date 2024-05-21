@@ -2,6 +2,7 @@ import * as Yup from "yup";
 
 export const BranchAddSchema = Yup.object({
     location: Yup.string().trim().min(4).required("Please enter branch location"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim().min(4).required("Please select image")
         .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
             if (value) {
@@ -19,6 +20,7 @@ export const BranchAddSchema = Yup.object({
 
 export const BranchEditSchema = Yup.object({
     location: Yup.string().trim().min(4).required("Please enter branch location"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim().min(4)
         .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
             if (value) {
@@ -36,6 +38,7 @@ export const BranchEditSchema = Yup.object({
 
 export const AmenitiesAddSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter branch location"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the logo alt tag."),
     logo: Yup.string().trim().min(4).required("Please select image")
         .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp, svg)', function (value) {
             if (value) {
@@ -49,6 +52,7 @@ export const AmenitiesAddSchema = Yup.object({
 
 export const AmenitiesEditSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter branch location"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the logo alt tag."),
     logo: Yup.string().trim().min(4)
         .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp, svg)', function (value) {
             if (value) {
@@ -72,7 +76,10 @@ export const ProjectAddSchema = Yup.object({
     area_from: Yup.string().trim().min(1).required("Please select the project area (from)."),
     area_to: Yup.string().trim().min(1).required("Please select the project area (to)."),
     status: Yup.string().trim().min(1).required("Please select the project status."),
-    slug: Yup.string().trim().min(1).required("Please enter the project slug."),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
+    thumbnail_alt: Yup.string().trim().min(1).required("Please enter the thumbnail alt tag ."),
+    qr_code_alt: Yup.string().trim().min(1).required("Please enter the qr code alt tag ."),
     iframe: Yup.string().trim().min(1).required("Please paste the project map link."),
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
@@ -109,7 +116,10 @@ export const ProjectEditSchema = Yup.object({
     area_from: Yup.string().trim().min(1).required("Please select the project area (from)."),
     area_to: Yup.string().trim().min(1).required("Please select the project area (to)."),
     status: Yup.string().trim().min(1).required("Please select the project status."),
-    slug: Yup.string().trim().min(1).required("Please enter the project slug."),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
+    thumbnail_alt: Yup.string().trim().min(1).required("Please enter the thumbnail alt tag ."),
+    qr_code_alt: Yup.string().trim().min(1).required("Please enter the qr code alt tag ."),
     iframe: Yup.string().trim().min(1).required("Please paste the project map link."),
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
@@ -134,6 +144,33 @@ export const ProjectEditSchema = Yup.object({
 
 });
 
+export const ProjectImageAddSchema = Yup.object({
+    project: Yup.string().trim().min(4).required("Please enter branch location"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
+    images: Yup.string().trim().min(4).required("Please select image")
+        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
+export const ProjectImageEditSchema = Yup.object({
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
+    images: Yup.string().trim().min(4)
+        .test('fileType', 'Invalid file format, only images are allowed (jpg, jpeg, png, webp)', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+});
+
 export const SpecificationAddSchema = Yup.object({
     project: Yup.string().trim().required("Please enter specificaation title"),
     title: Yup.string().trim().min(4).required("Please enter specificaation title"),
@@ -149,6 +186,7 @@ export const NearByAddSchema = Yup.object({
 
 export const FloorImageAddSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     images: Yup.string().trim().min(4).required("Please select the a image.")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -162,6 +200,7 @@ export const FloorImageAddSchema = Yup.object({
 
 export const FloorImageEditSchema = Yup.object({
     title: Yup.string().trim().min(4).required("Please enter a title"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     images: Yup.string().trim().min(4)
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -180,6 +219,7 @@ export const RentalsAddSchema = Yup.object({
     type: Yup.string().trim().required("Please select the type"),
     area: Yup.string().trim().required("Please enter the area (sq.ft)"),
     price: Yup.string().trim().required("Please enter the price"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -197,6 +237,7 @@ export const RentalsEditSchema = Yup.object({
     type: Yup.string().trim().required("Please select the type"),
     area: Yup.string().trim().required("Please enter the area (sq.ft)"),
     price: Yup.string().trim().required("Please enter the price"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim()
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -210,6 +251,7 @@ export const RentalsEditSchema = Yup.object({
 
 export const KeyHandoverAddSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter a name"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -223,6 +265,7 @@ export const KeyHandoverAddSchema = Yup.object({
 
 export const KeyHandoverEditSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter a name"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim()
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -235,10 +278,11 @@ export const KeyHandoverEditSchema = Yup.object({
 });
 
 
-export const TestimoniealsAddSchema = Yup.object({
+export const TestimonialsAddSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter a name"),
     project: Yup.string().trim().min(4).required("Please select the project"),
     description: Yup.string().trim().required("Please enter the description"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -250,10 +294,11 @@ export const TestimoniealsAddSchema = Yup.object({
         }),
 });
 
-export const TestimoniealsEditSchema = Yup.object({
+export const TestimonialsEditSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter a name"),
     project: Yup.string().trim().min(4).required("Please select the project"),
     description: Yup.string().trim().required("Please enter the description"),
+    image_alt: Yup.string().trim().min(1).required("Please enter the image alt tag."),
     image: Yup.string().trim()
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -270,7 +315,8 @@ export const BlogsAddSchema = Yup.object({
     image_alt: Yup.string().trim().required("Please enter a image alt tag"),
     meta_tag: Yup.string().trim().required("Please enter a meta title "),
     meta_description: Yup.string().trim().required("Please enter a meta description"),
-    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     body: Yup.string().trim().required("Please enter the blog content"),
     image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
@@ -288,7 +334,8 @@ export const BlogsEditSchema = Yup.object({
     image_alt: Yup.string().trim().required("Please enter a image alt tag"),
     meta_tag: Yup.string().trim().required("Please enter a meta title"),
     meta_description: Yup.string().trim().required("Please enter a meta description"),
-    slug: Yup.string().trim().min(4).required("Please enter a Slug"),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     body: Yup.string().trim().required("Please enter the blog content"),
     image: Yup.string().trim()
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
@@ -307,7 +354,8 @@ export const NewsAndEventsAddSchema = Yup.object({
     meta_tag: Yup.string().trim().required("Please enter a meta tag "),
     youtube_link: Yup.string().trim(),
     meta_description: Yup.string().trim().required("Please enter a meta description"),
-    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     body: Yup.string().trim().required("Please enter the content"),
     image: Yup.string().trim().required("Please select the image")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
@@ -326,7 +374,8 @@ export const NewsAndEventsEditSchema = Yup.object({
     meta_tag: Yup.string().trim().required("Please enter a meta tag "),
     youtube_link: Yup.string().trim(),
     meta_description: Yup.string().trim().required("Please enter a meta description"),
-    slug: Yup.string().trim().min(4).required("Please enter a slug"),
+    slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
+    .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     body: Yup.string().trim().required("Please enter the content"),
     image: Yup.string().trim()
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
@@ -345,4 +394,51 @@ export const SeoAddSchema = Yup.object({
     path: Yup.string().trim().required("Please enter a page path"),
     meta_title: Yup.string().trim().required("Please enter the meta title"),
     meta_description: Yup.string().trim().required("Please enter the meta description"),
+});
+
+export const ProjectCountHomePageSchema = Yup.object({
+    launched: Yup.string().trim().required("Please enter a launched project's count"),
+    projectcompleted: Yup.string().trim().required("Please enter a completed project's count"),
+    readytooccupy: Yup.string().trim().required("Please enter a ready to move project's count"),
+    ongoing: Yup.string().trim().required("Please enter a ongoing project's count"),
+});
+
+export const HomePageAwardsSchema = Yup.object({
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    images: Yup.string().trim().required("Please select the image")
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+    
+});
+
+export const HomePageAwardsEditSchema = Yup.object({
+    image_alt: Yup.string().trim().required("Please enter a image alt tag"),
+    images: Yup.string().trim()
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
+    
+});
+
+export const HomePageVideosSchema = Yup.object({
+    desktop_video: Yup.string().trim().required("Please add a desktop video"),
+    mobile_video: Yup.string().trim().required("Please add a mobile video"),
+    
+});
+
+export const HomePageVideoEditsSchema = Yup.object({
+    desktop_video: Yup.string().trim(),
+    mobile_video: Yup.string().trim()
+    
 });

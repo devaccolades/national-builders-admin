@@ -7,8 +7,10 @@ import { ProjectAddSchema } from '../Validations/Validations'
 import { useFormik } from 'formik'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import ButtonLoading from '../components/common/ButtonLoading'
 
 function AddProject() {
+    const [isLoading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     // Lising Datas
@@ -51,6 +53,8 @@ function AddProject() {
         qr_code: "",
         thumbnail: "",
         slug: "",
+        thumbnail_alt: "",
+        qr_code_alt: "",
         status: "",
         iframe: "",
         meta_title: "",
@@ -71,42 +75,44 @@ function AddProject() {
             const formData = new FormData();
             for (const key in values) {
                 if (Object.hasOwnProperty.call(values, key)) {
-                  formData.append(key, values[key]);
+                    formData.append(key, values[key]);
                 }
-              }
-              formData.append('qr_code', projectImages.qr_code);
-              formData.append('thumbnail', projectImages.thumbnail);
-              try {
+            }
+            formData.append('qr_code', projectImages.qr_code);
+            formData.append('thumbnail', projectImages.thumbnail);
+            try {
+                setLoading(true)
                 const res = await AddProjectApi(formData)
-                const { StatusCode , message,data} = res.data;
-                if (StatusCode===6001){
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: `${message || "Project Added !"}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                    width:600,
-                  })
-                  resetForm()
-                  navigate('/project')
-                }else if (StatusCode === 6002){
+                const { StatusCode, message, data } = res.data;
+                if (StatusCode === 6001) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: `${message || "Project Added !"}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        width: 600,
+                    })
+                    resetForm()
+                    navigate('/project')
+                } else if (StatusCode === 6002) {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
                         title: `${(data && data.name && data.name[0]) || (data && data.slug && data.slug[0]) || "something wrong"}`,
                         showConfirmButton: false,
                         timer: 1500,
-                        width:600,
-                      })
+                        width: 600,
+                    })
                 }
 
-              } catch (error) {
+            } catch (error) {
                 console.log(error);
                 alert('Something wrong')
-              } finally {
+            } finally {
+                setLoading(false)
                 setSubmitting(false);
-              }
+            }
         },
     });
 
@@ -115,12 +121,12 @@ function AddProject() {
         handleChange({
             target: {
                 name: 'slug',
-                value: lowercaseValue, 
+                value: lowercaseValue,
             },
         });
     };
 
-    
+
     return (
         <Section>
             <div>
@@ -244,11 +250,11 @@ function AddProject() {
                         <div>
                             {projectImages.qr_code && <img className='w-[10rem] pb-3' src={URL.createObjectURL(projectImages.qr_code)} alt="rara qr code" />}
                             <Input
-                            accept=".png, .jpeg, .jpg, .webp"
+                                accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 onChange={(e) => {
                                     handleChange(e);
-                                    setProjectImages({...projectImages, qr_code: e.currentTarget.files[0] })
+                                    setProjectImages({ ...projectImages, qr_code: e.currentTarget.files[0] })
                                 }}
                                 onBlur={handleBlur}
                                 value={values.qr_code}
@@ -260,22 +266,54 @@ function AddProject() {
                         </div>
                     </Cover>
                     <Cover>
+                        <Label>Qr Alt Tag</Label>
+                        <div>
+                            <Input
+                                type="text"
+                                placeholder="Enter The Qr Alt Tag"
+                                name={"qr_code_alt"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.qr_code_alt}
+                            />
+                            {touched.qr_code_alt && errors.qr_code_alt && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.qr_code_alt}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
                         <Label>Project Thumbnail</Label>
                         <div>
                             {projectImages.thumbnail && <img className='pb-3' src={URL.createObjectURL(projectImages.thumbnail)} alt="rara qr code" />}
                             <Input
-                            accept=".png, .jpeg, .jpg, .webp"
+                                accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
                                 name={"thumbnail"}
                                 onChange={(e) => {
                                     handleChange(e);
-                                    setProjectImages({...projectImages, thumbnail: e.currentTarget.files[0] })
+                                    setProjectImages({ ...projectImages, thumbnail: e.currentTarget.files[0] })
                                 }}
                                 onBlur={handleBlur}
                                 value={values.thumbnail}
                             />
                             {touched.thumbnail && errors.thumbnail && (
                                 <div className="text-red-500 text-sm pt-2 -mb-3">{errors.thumbnail}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
+                        <Label>Thumbnail Alt Tag</Label>
+                        <div>
+                            <Input
+                                type="text"
+                                placeholder="Enter The Thumbnail Alt Tag"
+                                name={"thumbnail_alt"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.thumbnail_alt}
+                            />
+                            {touched.thumbnail_alt && errors.thumbnail_alt && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.thumbnail_alt}</div>
                             )}
                         </div>
                     </Cover>
@@ -413,7 +451,7 @@ function AddProject() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.status}>
-                                    <Option value='' disabled>Please select a status</Option>
+                                <Option value='' disabled>Please select a status</Option>
                                 <Option value='new launch'>new launch</Option>
                                 <Option value='ready to occupy'>ready to occupy</Option>
                                 <Option value='under construction'>under construction</Option>
@@ -424,10 +462,21 @@ function AddProject() {
                             )}
                         </div>
                     </Cover>
-                    <SubmitButton>
-                        <button type='button' onClick={() => navigate('/project/')} className='cancel'>Cancel</button>
-                        <button type='submit' className='submit'>Submit</button>
-                    </SubmitButton>
+
+                    {isLoading ? (
+                        <div className='pt-5 pb-5'>
+                            <ButtonLoading />
+                        </div>
+                    ) : (
+                        <>
+                            <SubmitButton>
+                                <button type='button' onClick={() => navigate('/project/')} className='cancel'>Cancel</button>
+                                <button type='submit' className='submit'>Submit</button>
+                            </SubmitButton>
+
+                        </>
+                    )}
+
                 </Form>
             )}
         </Section>
