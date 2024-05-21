@@ -134,7 +134,6 @@ const Td = styled.td`
     overflow-x: auto;
     text-align: center;
     font-size:16px;
-    text-transform: capitalize;
     height:6rem;
     display: flex;
     justify-content: center;
