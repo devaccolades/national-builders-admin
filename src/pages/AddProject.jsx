@@ -17,7 +17,7 @@ function AddProject() {
     const [branchDropDown, setBranchDropDown] = useState(null)
 
     // Thumbails and qr_code 
-    const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "" })
+    const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "",logo:"" })
 
 
     // Get backend datas
@@ -51,6 +51,7 @@ function AddProject() {
         area_from: "",
         area_to: "",
         qr_code: "",
+        logo:"",
         thumbnail: "",
         slug: "",
         thumbnail_alt: "",
@@ -80,6 +81,9 @@ function AddProject() {
             }
             formData.append('qr_code', projectImages.qr_code);
             formData.append('thumbnail', projectImages.thumbnail);
+            if (projectImages.logo){
+                formData.append('logo', projectImages.logo);
+            }
             try {
                 setLoading(true)
                 const res = await AddProjectApi(formData)
@@ -200,13 +204,18 @@ function AddProject() {
                             <Select name='type'
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.type}>
+                                value={values.type}
+                                className='capitalize'
+                                >
                                 <option value='' disabled>Please select a type</option>
                                 <Option value='apartment'>apartment</Option>
                                 <Option value='villas'>villas</Option>
                                 <Option value='commercial'>commercial</Option>
                                 <Option value='rental'>rental</Option>
+                                <Option value='residential cum commercial'>residential cum commercial</Option>
+                                <Option value='residential'>residential</Option>
                                 <Option value='other'>other</Option>
+                                
                             </Select>
                             {touched.type && errors.type && (
                                 <div className="text-red-500 text-sm pt-2 -mb-3">{errors.type}</div>
@@ -226,6 +235,26 @@ function AddProject() {
                             </TextArea>
                             {touched.description && errors.description && (
                                 <div className="text-red-500 text-sm -mb-3">{errors.description}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
+                        <Label>Project Logo</Label>
+                        <div>
+                            {projectImages.logo && <img className='w-[10rem] pb-3' src={URL.createObjectURL(projectImages.logo)} alt="logo" />}
+                            <Input
+                                accept=".png, .jpeg, .jpg, .webp"
+                                type="file"
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setProjectImages({ ...projectImages, logo: e.currentTarget.files[0] })
+                                }}
+                                onBlur={handleBlur}
+                                value={values.logo}
+                                name={"logo"}
+                            />
+                            {touched.logo && errors.logo && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.logo}</div>
                             )}
                         </div>
                     </Cover>

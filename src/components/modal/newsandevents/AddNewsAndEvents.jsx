@@ -165,16 +165,16 @@ function AddNewsAndEvents({ isModal, setModal, fetchData }) {
                         </Cover>
 
                         <Cover>
-                            <Label>Youtube Link</Label>
+                            <Label>Youtube Embed Link</Label>
                             <div className='w-full'>
-                                <Input
-                                    placeholder='Enter the youtube link'
-                                    type="text"
-                                    name={"youtube_link"}
+                                <TextArea
+                                    placeholder='Enter a meta description'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.youtube_link}
-                                />
+                                    name={"youtube_link"}
+                                >
+                                </TextArea>
                                 {touched.youtube_link && errors.youtube_link && (
                                     <div className="text-red-500 text-sm pt-2 -mb-3">{errors.youtube_link}</div>
                                 )}
@@ -229,7 +229,7 @@ function AddNewsAndEvents({ isModal, setModal, fetchData }) {
                             </div>
                         </Cover>
 
-                       {isLoading?(<ButtonLoading/>):( <SubmitBtn>
+                        {isLoading ? (<ButtonLoading />) : (<SubmitBtn>
                             <button type='submit'>
                                 Submit
                             </button>

@@ -88,7 +88,7 @@ function EditProjectImages({ isModal, setModal,editImgData,fetData }) {
               <Label>Image Alt Title</Label>
               <div className='w-full'>
                 <Input
-                  placeholder='Enter Logo Alt Title'
+                  placeholder='Enter Image Alt Title'
                   type="text"
                   name={"image_alt"}
                   onChange={handleChange}

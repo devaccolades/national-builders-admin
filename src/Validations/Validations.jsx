@@ -66,24 +66,24 @@ export const AmenitiesEditSchema = Yup.object({
 
 export const ProjectAddSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter the project name."),
-    description: Yup.string().trim().min(4).required("Please provide an overview of the project."),
-    rera_number: Yup.string().trim().min(4).required("Please enter the project's RERA number."),
+    description: Yup.string().trim().min(4),
+    rera_number: Yup.string().trim().min(4),
     location: Yup.string().trim().min(4).required("Please specify the project location."),
     company_branch: Yup.string().trim().min(1).required("Please select the project branch."),
     type: Yup.string().trim().min(1).required("Please select the project type."),
-    bedrooms: Yup.string().trim().min(1).required("Please select the number of bedrooms."),
-    units: Yup.string().trim().min(1).required("Please select the project units."),
-    area_from: Yup.string().trim().min(1).required("Please select the project area (from)."),
-    area_to: Yup.string().trim().min(1).required("Please select the project area (to)."),
+    bedrooms: Yup.string().trim().min(1),
+    units: Yup.string().trim().min(1),
+    area_from: Yup.string().trim().min(1),
+    area_to: Yup.string().trim().min(1),
     status: Yup.string().trim().min(1).required("Please select the project status."),
     slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
     .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     thumbnail_alt: Yup.string().trim().min(1).required("Please enter the thumbnail alt tag ."),
-    qr_code_alt: Yup.string().trim().min(1).required("Please enter the qr code alt tag ."),
-    iframe: Yup.string().trim().min(1).required("Please paste the project map link."),
+    qr_code_alt: Yup.string().trim().min(1),
+    iframe: Yup.string().trim().min(1),
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
-    qr_code: Yup.string().trim().min(4).required("Please select the QR code image.")
+    qr_code: Yup.string().trim().min(4)
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
                 const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
@@ -92,6 +92,15 @@ export const ProjectAddSchema = Yup.object({
             }
             return true;
         }),
+    logo: Yup.string().trim().min(4)
+    .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+        if (value) {
+            const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+            const extension = value.split('.').pop().toLowerCase();
+            return acceptedFormats.includes(extension);
+        }
+        return true;
+    }),
     thumbnail: Yup.string().trim().min(4).required("Please select the thumbnail image.")
         .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
             if (value) {
@@ -106,21 +115,21 @@ export const ProjectAddSchema = Yup.object({
 
 export const ProjectEditSchema = Yup.object({
     name: Yup.string().trim().min(4).required("Please enter the project name."),
-    description: Yup.string().trim().min(4).required("Please provide an overview of the project."),
-    rera_number: Yup.string().trim().min(4).required("Please enter the project's RERA number."),
+    description: Yup.string().trim().min(4),
+    rera_number: Yup.string().trim().min(4),
     location: Yup.string().trim().min(4).required("Please specify the project location."),
     company_branch: Yup.string().trim().min(1).required("Please select the project branch."),
     type: Yup.string().trim().min(1).required("Please select the project type."),
-    bedrooms: Yup.string().trim().min(1).required("Please select the number of bedrooms."),
-    units: Yup.string().trim().min(1).required("Please select the project units."),
-    area_from: Yup.string().trim().min(1).required("Please select the project area (from)."),
-    area_to: Yup.string().trim().min(1).required("Please select the project area (to)."),
+    bedrooms: Yup.string().trim().min(1),
+    units: Yup.string().trim().min(1),
+    area_from: Yup.string().trim().min(1),
+    area_to: Yup.string().trim().min(1),
     status: Yup.string().trim().min(1).required("Please select the project status."),
     slug: Yup.string().trim() .min(4, "Slug must be at least 4 characters long")
     .max(50, "Slug must be at most 50 characters long").required("Please enter a slug"),
     thumbnail_alt: Yup.string().trim().min(1).required("Please enter the thumbnail alt tag ."),
-    qr_code_alt: Yup.string().trim().min(1).required("Please enter the qr code alt tag ."),
-    iframe: Yup.string().trim().min(1).required("Please paste the project map link."),
+    qr_code_alt: Yup.string().trim().min(1),
+    iframe: Yup.string().trim().min(1),
     meta_title: Yup.string().trim().min(1).required("Please enter the project meta title."),
     meta_description: Yup.string().trim().min(1).required("Please provide the project description."),
     qr_code: Yup.string().trim().min(4)
@@ -141,7 +150,15 @@ export const ProjectEditSchema = Yup.object({
             }
             return true;
         }),
-
+        logo: Yup.string().trim().min(4)
+        .test('fileType', 'Invalid file format. Only images (jpg, jpeg, png, webp) are allowed.', function (value) {
+            if (value) {
+                const acceptedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+                const extension = value.split('.').pop().toLowerCase();
+                return acceptedFormats.includes(extension);
+            }
+            return true;
+        }),
 });
 
 export const ProjectImageAddSchema = Yup.object({
@@ -173,7 +190,7 @@ export const ProjectImageEditSchema = Yup.object({
 
 export const SpecificationAddSchema = Yup.object({
     project: Yup.string().trim().required("Please enter specificaation title"),
-    title: Yup.string().trim().min(4).required("Please enter specificaation title"),
+    title: Yup.string().trim().required("Please enter specificaation title"),
     description: Yup.string().trim().min(10).required("Please enter the specificaation description"),
 });
 

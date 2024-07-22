@@ -12,7 +12,7 @@ function BasicDetails({ datas, slug }) {
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(false)
     const [branchDropDown, setBranchDropDown] = useState(null)
-    const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "" })
+    const [projectImages, setProjectImages] = useState({ thumbnail: "", qr_code: "",logo:""})
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,6 +40,7 @@ function BasicDetails({ datas, slug }) {
         area_from: datas.area_from || "",
         area_to: datas.area_to || "",
         qr_code: '',
+        logo:"",
         thumbnail: '',
         thumbnail_alt: datas?.thumbnail_alt || "",
         qr_code_alt: datas?.qr_code_alt || "",
@@ -69,9 +70,12 @@ function BasicDetails({ datas, slug }) {
             }
             formData.append('qr_code', projectImages.qr_code);
             formData.append('thumbnail', projectImages.thumbnail);
+            if (values.logo){
+                formData.append('logo', projectImages.logo);
+            }
             try {
                 setLoading(true)
-                const res = await EditProjectApi(projectImages.qr_code || projectImages.thumbnail ? formData : values, datas?.slug)
+                const res = await EditProjectApi(projectImages.qr_code || projectImages.thumbnail || projectImages.logo ? formData : values, datas?.slug)
                 const { StatusCode, message, data } = res.data;
                 if (StatusCode === 6000) {
                     // resetForm()
@@ -187,12 +191,15 @@ function BasicDetails({ datas, slug }) {
                             <Select name='type'
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.type}>
+                                value={values.type}
+                                className='capitalize'>
                                 <option value='' disabled>Please select a type</option>
                                 <Option value='apartment'>apartment</Option>
                                 <Option value='villas'>villas</Option>
                                 <Option value='commercial'>commercial</Option>
                                 <Option value='rental'>rental</Option>
+                                <Option value='residential cum commercial'>residential cum commercial</Option>
+                                <Option value='residential'>residential</Option>
                                 <Option value='other'>other</Option>
                             </Select>
                             {touched.type && errors.type && (
@@ -217,6 +224,26 @@ function BasicDetails({ datas, slug }) {
                         </div>
                     </Cover>
                     <Cover>
+                        <Label>Project Logo</Label>
+                        <div>
+                        {datas.logo && <img className='w-[10rem] pb-3' src={projectImages.logo ? URL.createObjectURL(projectImages.logo) : datas?.logo} alt="rara qr code" />}
+                            <Input
+                                accept=".png, .jpeg, .jpg, .webp"
+                                type="file"
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setProjectImages({ ...projectImages, logo: e.currentTarget.files[0] })
+                                }}
+                                onBlur={handleBlur}
+                                value={values.logo}
+                                name={"logo"}
+                            />
+                            {touched.logo && errors.logo && (
+                                <div className="text-red-500 text-sm pt-2 -mb-3">{errors.logo}</div>
+                            )}
+                        </div>
+                    </Cover>
+                    <Cover>
                         <Label>Project RETA Number</Label>
                         <div>
                             <Input
@@ -235,7 +262,7 @@ function BasicDetails({ datas, slug }) {
                     <Cover>
                         <Label>Project RERA Qr Code</Label>
                         <div>
-                            {datas.qr_code && <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />}
+                             <img className='w-[10rem] pb-3' src={projectImages.qr_code ? URL.createObjectURL(projectImages.qr_code) : datas?.qr_code} alt="rara qr code" />
                             <Input
                                 accept=".png, .jpeg, .jpg, .webp"
                                 type="file"
