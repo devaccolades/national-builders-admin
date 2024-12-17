@@ -465,9 +465,10 @@ function BasicDetails({ datas, slug }) {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.status}>
-                                <Option value='' disabled>Please select a status</Option>
-                                <Option value='new launch'>new launch</Option>
+                                 <Option value='new launch'>new launch</Option>
+                                <Option value='on going'>on going</Option>
                                 <Option value='ready to occupy'>ready to occupy</Option>
+                                <Option value='nearing completion'>nearing completion</Option>
                                 <Option value='under construction'>under construction</Option>
                                 <Option value='sold out'>sold out</Option>
                             </Select>
